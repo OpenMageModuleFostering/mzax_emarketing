@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.3.0
+ * @version     0.4.0
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -188,9 +188,10 @@ class Mzax_Emarketing_Db_Select extends Mzax_Db_Select
      * 
      * @param string $attribute
      * @param string $binding Optional binding column
+     * @param boolean $joinStatic Join attribute even if static
      * @return Zend_Db_Expr Expression that points to the value column
      */
-    public function joinAttribute($bind, $attribute)
+    public function joinAttribute($bind, $attribute, $joinStatic = false)
     {
         if($attribute instanceof Mage_Eav_Model_Entity_Attribute_Abstract) {
             $joinKey = "{$attribute->getEntityType()->getEntityTypeCode()}/{$attribute->getAttributeCode()}";
@@ -203,7 +204,7 @@ class Mzax_Emarketing_Db_Select extends Mzax_Db_Select
             return $this->getJoin($joinKey);
         }
         
-        $this->_joins[$joinKey] = $this->getResourceHelper()->joinAttribute($this, $attribute, $this->_getBindExpr($bind));
+        $this->_joins[$joinKey] = $this->getResourceHelper()->joinAttribute($this, $attribute, $this->_getBindExpr($bind), null, $joinStatic);
         return $this->_joins[$joinKey];
     }
     

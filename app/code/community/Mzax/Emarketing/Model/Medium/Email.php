@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.3.0
+ * @version     0.4.0
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -24,7 +24,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.3.0
+ * @version 0.4.0
  */
 class Mzax_Emarketing_Model_Medium_Email extends Mzax_Emarketing_Model_Medium_Abstract
 {
@@ -58,6 +58,17 @@ class Mzax_Emarketing_Model_Medium_Email extends Mzax_Emarketing_Model_Medium_Ab
         $snippets->addVar('subject', $hlp->__('Email Subject'));
         $snippets->addVar('address', $hlp->__('Recipient Address'));
         $snippets->addVar('email', $hlp->__('Recipient Email'));
+        
+        // requires version 1.6 of sales rule (magento 1.7)
+        if(version_compare(Mage::getConfig()->getModuleConfig('Mage_SalesRule')->version, '1.6.0') >= 0) {
+            $snippets->addSnippets(
+                'mage.coupon', 
+                '{{coupon rule="${1:1}" length="${2:8}" expire="${3:120}" prefix="${4:ABC-}" }}', 
+                $hlp->__('Coupon Code'), 
+                $hlp->__('Generates a coupon code for the specifed shopping cart price rule.'));
+        }
+        
+        
     }
     
     
