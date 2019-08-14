@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.3
+ * @version     0.4.4
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -43,10 +43,70 @@ class Mzax_Emarketing_UnsubscribeController extends Mage_Core_Controller_Front_A
         $this->loadLayout();
         $this->renderLayout();
     }
-    
-    
-    
-    
+
+
+    /**
+     * Update preference for given subscriber
+     *
+     * @return void
+     */
+    public function updateAction()
+    {
+        $session = $this->getSession();
+        $request = $this->getRequest();
+
+        if($request->isPost()) {
+            do {
+                if($request->getPost('form_key') !== $session->getFormKey()) {
+                    break;
+                }
+                $email = $request->getPost('email');
+                if($email !== $session->getLastAddress()) {
+                    break;
+                }
+
+                /* @var $subscriber Mage_Newsletter_Model_Subscriber */
+                $subscriber = Mage::getModel('newsletter/subscriber');
+                $subscriber->loadByEmail($email);
+
+                if(!$subscriber->getId()) {
+                    break;
+                }
+
+                $lists = $request->getPost('lists');
+
+                /* @var $collection Mzax_Emarketing_Model_Resource_Newsletter_List_Collection */
+                $collection = Mage::getResourceModel('mzax_emarketing/newsletter_list_collection');
+                $collection->addSubscriberToFilter($subscriber);
+
+                /* @var $list Mzax_Emarketing_Model_Newsletter_List */
+                foreach($collection as $list) {
+                    if(in_array($list->getId(), $lists)) {
+                        $list->addSubscribers($subscriber->getId());
+                    }
+                    else {
+                        $list->removeSubscribers($subscriber->getId());
+                    }
+                }
+
+                Mage::getSingleton('core/session')->addSuccess($this->__("Your email preference have been updated."));
+
+                $this->_redirect('*/*/index');
+                return;
+
+            } while(false);
+        }
+        $this->_redirectUrl('/');
+    }
+
+
+
+
+    /**
+     * Unsubscribe user from newsletter
+     *
+     * @return void
+     */
     public function doAction()
     {
         $session = $this->getSession();
