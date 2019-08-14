@@ -1,7 +1,7 @@
 <?php
 /*
  * NOTICE:
- * This code has been slightly altered by Jacob Siefer to use old php namespaces.
+ * This code has been slightly altered by the Mzax_Emarketing module to use old php namespaces.
  */
 /**
  * ua-parser

@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -24,7 +24,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.2.6
+ * @version 0.2.7
  */
 class Mzax_Emarketing_Model_Recipient_Provider_Quote
     extends Mzax_Emarketing_Model_Recipient_Provider_Abstract 
@@ -50,6 +50,43 @@ class Mzax_Emarketing_Model_Recipient_Provider_Quote
     }
     
     
+    
+    /**
+     * Set order default filters
+     *
+     * (non-PHPdoc)
+     * @see Mzax_Emarketing_Model_Recipient_Provider_Abstract::setDefaultFilters()
+     */
+    public function setDefaultFilters()
+    {
+        parent::setDefaultFilters();
+    
+        /* @var $storeFilter Mzax_Emarketing_Model_Object_Filter_Quote_Table */
+        $storeFilter = $this->addFilter('quote_table');
+        if( $storeFilter && $this->getCampaign() ) {
+            $storeFilter->setColumn('store_id');
+            $storeFilter->setValue($this->getCampaign()->getStoreId());
+            $storeFilter->setOperator('()');
+        }
+        
+    }
+    
+    
+    
+    public function prepareSnippets(Mzax_Emarketing_Model_Medium_Email_Snippets $snippets)
+    {
+        parent::prepareSnippets($snippets);
+        
+        $snippets->addVar('quote.customer_firstname', 'Customer Firstname', 'Firstname of the customer from the quote');
+        $snippets->addVar('quote.customer_lastname', 'Customer Lastname', 'Lastname of the customer from the quote');
+        
+        $snippets->addSnippets(
+            'mage.cart.products', 
+            '{{block type="mzax_emarketing/template" area="frontend" template="mzax/email/quote-items.phtml" quote="$quote"}}',
+            $this->__('Shopping Cart Products Table'),
+            $this->__('Simple table to display the shopping cart products.'));
+        
+    }
     
     
     

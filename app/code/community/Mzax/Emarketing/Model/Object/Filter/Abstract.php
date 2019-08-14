@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -118,37 +118,51 @@ abstract class Mzax_Emarketing_Model_Object_Filter_Abstract extends Mzax_Emarket
     /**
      * Add child filter
      *
-     * @param mixed $filter
+     * @param mixed $param
      * @return Mzax_Emarketing_Model_Object_Filter_Abstract
      */
-    public function addFilter($filter, $quite = true)
+    public function addFilter($param, $quite = true)
     {
-        if(is_string($filter)) {
-            $instance = self::getFilterFactory()->factory($filter);
-            if(!$instance) {
+        if(is_string($param)) {
+            $filter = self::getFilterFactory()->factory($param);
+            if(!$filter) {
                 if(!$quite) {
                     throw new Mage_Exception(Mage::helper('mzax_emarketing')->__('Failed to initialise filter with type “%s”. This filter might not be installed on your system.', $filter['type']));
                 }
                 return null;
             }
-            $filter = $instance;
         }
-        else if(is_array($filter) && isset($filter['type'])) {
-            $instance = self::getFilterFactory()->factory($filter['type']);
-            if(!$instance) {
+        else if(is_array($param) && isset($param['type'])) {
+            $filter = self::getFilterFactory()->factory($param['type']);
+            if(!$filter) {
                 if(!$quite) {
                     throw new Mage_Exception(Mage::helper('mzax_emarketing')->__('Failed to initialise filter with type “%s”. This filter might not be installed on your system.', $filter['type']));
                 }
                 return null;
             }
-            $instance->load($filter);
-            $filter = $instance;
         }
+        else {
+            $filter = $param;
+        }
+        
         if(!$filter instanceof Mzax_Emarketing_Model_Object_Filter_Abstract) {
             return null;
         }
+        
+        if(!$this->acceptFilter($filter)) {
+            if(!$quite) {
+                throw new Mage_Exception(Mage::helper('mzax_emarketing')->__('Filter of type “%s” does not allow child of type %s.', $this->getType(), $filter->getType()));
+            }
+            return null;
+        }
+        
         $this->_filters[] = $filter->setParent($this);
         $filter->setId($this->getId() . '--' . count($this->_filters));
+        
+        if(is_array($param)) {
+            $filter->load($param);
+        }
+        
         return $filter;
     }
     
@@ -412,6 +426,17 @@ abstract class Mzax_Emarketing_Model_Object_Filter_Abstract extends Mzax_Emarket
     }
     
     
+    /**
+     * Retreive data for export
+     * 
+     * @return array
+     */
+    public function export()
+    {
+        return $this->asArray();
+    }
+    
+    
     
     
     /**
@@ -661,6 +686,25 @@ abstract class Mzax_Emarketing_Model_Object_Filter_Abstract extends Mzax_Emarket
     
     
     
+    /**
+     * Add hidden input field
+     *
+     * @param string $name
+     * @param string $value
+     * @return Varien_Data_Form_Element_Abstract
+     */
+    protected function getHiddenField($name, $value)
+    {
+        return $this->getForm()->addField($name, 'hidden', array(
+            'name'    => $name,
+            'class'   => 'hidden',
+            'no_span' => true,
+            'is_meta' => true,
+            'value'   => $value
+        ));
+    }
+    
+    
     
     /**
      * Helper for simple select element
@@ -888,8 +932,8 @@ abstract class Mzax_Emarketing_Model_Object_Filter_Abstract extends Mzax_Emarket
             $future = $this->getTimeDirection($key);
         }
         
-        $from = (int)    $this->getData($fromKey);
-        $to   = (int)    $this->getData($toKey);
+        $from = (float)  $this->getData($fromKey);
+        $to   = (float)  $this->getData($toKey);
         $unit = (string) $this->getData($unitKey);
         // days => DAY, weeks => WEEK,...
         $unit = substr(strtoupper($unit), 0, -1);
@@ -1095,7 +1139,7 @@ abstract class Mzax_Emarketing_Model_Object_Filter_Abstract extends Mzax_Emarket
     
     protected function getTimeExpr($key, $field, $substract = false)
     {
-        $value = (int)    $this->getData("{$key}_value");
+        $value = (float)  $this->getData("{$key}_value");
         $unit  = (string) $this->getData("{$key}_unit");
         
         $unit = substr(strtoupper($unit), 0, -1);

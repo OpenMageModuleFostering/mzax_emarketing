@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -25,6 +25,9 @@ class Mzax_Emarketing_Admin_TemplateController extends Mage_Adminhtml_Controller
     
     public function indexAction()
     {
+        $this->_title($this->__('eMarketing'))
+             ->_title($this->__('Manage Templates'));
+        
         $this->loadLayout();
         $this->_setActiveMenu('promo/emarketing');
         
@@ -47,7 +50,10 @@ class Mzax_Emarketing_Admin_TemplateController extends Mage_Adminhtml_Controller
                 $template->addData($values['template']);
             }
         }
-
+        
+        $this->_title($this->__('eMarketing'))
+             ->_title($this->__('Edit Template'));
+        
         $this->loadLayout();
         $this->_setActiveMenu('promo/emarketing');
         $this->renderLayout();
@@ -166,9 +172,9 @@ class Mzax_Emarketing_Admin_TemplateController extends Mage_Adminhtml_Controller
                     $template->addData($data['template']);
                 }
                 
-                
                 $template->save();
-
+                
+                Mage::app()->cleanCache(array(Mzax_Emarketing_Model_Campaign::CACHE_TAG));
                 Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Template was successfully saved'));
 
                 if ($redirectBack) {
@@ -213,7 +219,7 @@ class Mzax_Emarketing_Admin_TemplateController extends Mage_Adminhtml_Controller
                     ->setHttpResponseCode(200)
                     ->setHeader('Pragma', 'public', true)
                     ->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true)
-                    ->setHeader('Content-type', 'text/csv', true)
+                    ->setHeader('Content-type', 'text/plain', true)
                     ->setHeader('Content-Length', $contentLength)
                     ->setHeader('Content-Disposition', 'attachment; filename="'.$fileName.'"')
                     ->setHeader('Last-Modified', date('r'))

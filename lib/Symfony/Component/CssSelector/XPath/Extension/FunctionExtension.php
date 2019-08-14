@@ -1,8 +1,9 @@
 <?php
 /*
  * NOTICE:
- * This code has been slightly altered by Jacob Siefer to use old php namespaces.
+ * This code has been slightly altered by the Mzax_Emarketing module to use old php namespaces.
  */
+
 /*
  * This file is part of the Symfony package.
  *
@@ -87,7 +88,7 @@ class Symfony_Component_CssSelector_XPath_Extension_FunctionExtension extends Sy
 
         if ($last) {
             $expr = 'last() - '.$expr;
-            $b--;
+            --$b;
         }
 
         if (0 !== $b) {

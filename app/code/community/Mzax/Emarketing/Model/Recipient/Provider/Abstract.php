@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -101,6 +101,20 @@ abstract class Mzax_Emarketing_Model_Recipient_Provider_Abstract
     
         
     
+    
+    public function setDefaultFilters()
+    {
+        Mage::dispatchEvent('mzax_emarketing_campaign_default_filters', array(
+            'provider' => $this
+        ));
+        
+        /* @var $newsletterFilter Mzax_Emarketing_Model_Object_Filter_Newsletter */
+        $newsletterFilter = $this->addFilter('newsletter');
+        if( $newsletterFilter ) {
+            $newsletterFilter->setCondition('is');
+            $newsletterFilter->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED);
+        }
+    }
     
     
     

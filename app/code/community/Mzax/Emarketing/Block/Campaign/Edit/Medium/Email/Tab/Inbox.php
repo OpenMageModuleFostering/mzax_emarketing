@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -73,4 +73,10 @@ class Mzax_Emarketing_Block_Campaign_Edit_Medium_Email_Tab_Inbox extends Mzax_Em
         return $this->getUrl('*/admin_inbox/email', array('id'=>$row->getId()));
     }
     
+    
+    
+    protected function getAdditionalJavascript()
+    {
+        return "window.{$this->getId()}_massactionJsObject = {$this->getId()}_massactionJsObject;";
+    }
 }

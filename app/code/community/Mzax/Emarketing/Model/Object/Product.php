@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -45,7 +45,7 @@ class Mzax_Emarketing_Model_Object_Product extends Mzax_Emarketing_Model_Object_
     public function getQuery()
     {
         $query = parent::getQuery();
-        $query->addBinding('product_id', 'product_id');
+        $query->addBinding('product_id', $this->getIdFieldName());
     
         return $query;
     }

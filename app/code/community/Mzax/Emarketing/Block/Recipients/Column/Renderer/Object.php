@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -52,7 +52,7 @@ class Mzax_Emarketing_Block_Recipients_Column_Renderer_Object extends Mage_Admin
         
         $url = $this->getObject()->getAdminUrl($row->getData($idField));
         if($url) {
-            return "<a href=\"{$url}\">$label</a>";
+            return "<a href=\"{$url}\" target=\"_blank\">$label</a>";
         }
         return $label;
     }

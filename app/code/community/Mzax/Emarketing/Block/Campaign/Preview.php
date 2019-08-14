@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -172,14 +172,18 @@ class Mzax_Emarketing_Block_Campaign_Preview extends Mage_Adminhtml_Block_Widget
     public function getEmail()
     {
         if(!$this->_email) {
-            $recipient = $this->getRecipient();
-            $recipient->prepare();
-            
             /* @var $email Mzax_Emarketing_Model_Outbox_Email */
             $this->_email = Mage::getModel('mzax_emarketing/outbox_email');
-            $this->_email->setTo($recipient->getAddress());
-            $this->_email->setRecipient($recipient);
-            $this->_email->render();
+            try {
+                $recipient = $this->getRecipient();
+                $recipient->prepare();
+                $this->_email->setTo($recipient->getAddress());
+                $this->_email->setRecipient($recipient);
+                $this->_email->render();
+            }
+            catch(Exception $error) {
+                $this->setError($error);
+            }
         }
         return $this->_email;
     }

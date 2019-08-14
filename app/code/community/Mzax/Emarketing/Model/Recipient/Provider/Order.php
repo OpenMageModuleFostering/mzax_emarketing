@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -24,7 +24,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.2.6
+ * @version 0.2.7
  */
 class Mzax_Emarketing_Model_Recipient_Provider_Order
     extends Mzax_Emarketing_Model_Recipient_Provider_Abstract 
@@ -49,6 +49,58 @@ class Mzax_Emarketing_Model_Recipient_Provider_Order
         return Mage::getSingleton('mzax_emarketing/object_order');
     }
     
+    
+    /**
+     * Set order default filters
+     * 
+     * (non-PHPdoc)
+     * @see Mzax_Emarketing_Model_Recipient_Provider_Abstract::setDefaultFilters()
+     */
+    public function setDefaultFilters()
+    {
+        parent::setDefaultFilters();
+    
+        /* @var $storeFilter Mzax_Emarketing_Model_Object_Filter_Order_Table */
+        $storeFilter = $this->addFilter('order_table');
+        if( $storeFilter && $this->getCampaign() ) {
+            $storeFilter->setColumn('store_id');
+            $storeFilter->setValue($this->getCampaign()->getStoreId());
+            $storeFilter->setOperator('()');
+        }
+        
+        /* @var $statusFilter Mzax_Emarketing_Model_Object_Filter_Order_Table */
+        $statusFilter = $this->addFilter('order_table');
+        if( $statusFilter) {
+            $statusFilter->setColumn('status');
+            $statusFilter->setValue(Mage_Sales_Model_Order::STATE_COMPLETE);
+            $statusFilter->setOperator('()');
+        }
+        
+        /* @var $shippedFilter Mzax_Emarketing_Model_Object_Filter_Order_ShippedAt */
+        $shippedFilter = $this->addFilter('order_shipped');
+        if( $shippedFilter) {
+            $shippedFilter->setShippedAtFrom(5);
+            $shippedFilter->setShippedAtTo(8);
+            $shippedFilter->setShippedAtUnit('days');
+        }
+    }
+    
+    
+    
+    public function prepareSnippets(Mzax_Emarketing_Model_Medium_Email_Snippets $snippets)
+    {
+        parent::prepareSnippets($snippets);
+        
+        $snippets->addVar('order.customer_firstname', 'Customer Firstname', 'Firstname of the customer from the order');
+        $snippets->addVar('order.customer_lastname', 'Customer Lastname', 'Lastname of the customer from the order');
+        
+        $snippets->addSnippets(
+            'mage.order.products', 
+            '{{block type="mzax_emarketing/template" area="frontend" template="mzax/email/order-items.phtml" order="$order"}}',
+            $this->__('Order Products Table'),
+            $this->__('Simple table to display the order products.'));
+        
+    }
     
     
     

@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -24,6 +24,9 @@ class Mzax_Emarketing_Admin_InboxController extends Mage_Adminhtml_Controller_Ac
     
     public function indexAction()
     {
+        $this->_title($this->__('eMarketing'))
+             ->_title($this->__('Inbox'));
+        
         $this->loadLayout();
         $this->_setActiveMenu('promo/emarketing');
         
@@ -40,6 +43,9 @@ class Mzax_Emarketing_Admin_InboxController extends Mage_Adminhtml_Controller_Ac
     public function emailAction()
     {
         $message = $this->_initEmail();
+        
+        $this->_title($this->__('eMarketing'))
+             ->_title($this->__('Inbox Email'));
         
         $this->loadLayout();
         $this->_setActiveMenu('promo/emarketing');

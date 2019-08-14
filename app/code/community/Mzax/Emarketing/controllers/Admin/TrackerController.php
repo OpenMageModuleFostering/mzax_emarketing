@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -24,7 +24,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.2.6
+ * @version 0.2.7
  */
 class Mzax_Emarketing_Admin_TrackerController extends Mage_Adminhtml_Controller_Action
 {
@@ -33,6 +33,9 @@ class Mzax_Emarketing_Admin_TrackerController extends Mage_Adminhtml_Controller_
 
     public function indexAction()
     {
+        $this->_title($this->__('eMarketing'))
+             ->_title($this->__('Manage Trackers'));
+        
         $this->loadLayout();
         $this->_setActiveMenu('promo/emarketing');
         
@@ -59,6 +62,9 @@ class Mzax_Emarketing_Admin_TrackerController extends Mage_Adminhtml_Controller_
         if($tracker->getId() && $tracker->isActive() && !$tracker->isAggregated()) {
             $this->_getSession()->addWarning($this->__('This tracker has changed and is not yet aggregated. You can do it manually under "Tasks" or wait a while.'));
         }
+        
+        $this->_title($this->__('eMarketing'))
+             ->_title($this->__('Edit Tracker'));
 
         $this->loadLayout();
         $this->_setActiveMenu('promo/emarketing');
@@ -111,6 +117,9 @@ class Mzax_Emarketing_Admin_TrackerController extends Mage_Adminhtml_Controller_
             return $this->_forward('edit');
         }
     
+        $this->_title($this->__('eMarketing'))
+             ->_title($this->__('New Tracker'));
+        
         $this->loadLayout();
         $this->_setActiveMenu('promo/emarketing');
         $this->renderLayout();
@@ -409,7 +418,7 @@ class Mzax_Emarketing_Admin_TrackerController extends Mage_Adminhtml_Controller_
                     ->setHttpResponseCode(200)
                     ->setHeader('Pragma', 'public', true)
                     ->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true)
-                    ->setHeader('Content-type', 'text/csv', true)
+                    ->setHeader('Content-type', 'text/plain', true)
                     ->setHeader('Content-Length', $contentLength)
                     ->setHeader('Content-Disposition', 'attachment; filename="'.$fileName.'"')
                     ->setHeader('Last-Modified', date('r'))

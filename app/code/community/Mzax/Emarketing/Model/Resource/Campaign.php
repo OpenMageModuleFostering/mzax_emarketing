@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -50,6 +50,22 @@ class Mzax_Emarketing_Model_Resource_Campaign extends Mage_Core_Model_Resource_D
     }
     
     
+
+    /**
+     * Retreive number of recipients
+     *
+     * @param Mzax_Emarketing_Model_Campaign $camapgin
+     * @return integer
+     */
+    public function countRecipients(Mzax_Emarketing_Model_Campaign $camapgin)
+    {
+        $select = $this->_getReadAdapter()->select()
+            ->from($this->getTable('mzax_emarketing/recipient'), 'COUNT(recipient_id)')
+            ->where('campaign_id = ?', $camapgin->getId())
+            ->group('campaign_id');
+        
+        return (int) $this->_getReadAdapter()->fetchOne($select);
+    }
     
     
     

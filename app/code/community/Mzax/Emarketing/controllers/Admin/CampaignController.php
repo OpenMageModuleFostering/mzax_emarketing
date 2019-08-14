@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -25,6 +25,9 @@ class Mzax_Emarketing_Admin_CampaignController extends Mage_Adminhtml_Controller
     
     public function indexAction()
     {
+        $this->_title($this->__('eMarketing'))
+             ->_title($this->__('Manage Campaigns'));
+        
         $this->loadLayout();
         $this->_setActiveMenu('promo/emarketing');
         
@@ -44,6 +47,8 @@ class Mzax_Emarketing_Admin_CampaignController extends Mage_Adminhtml_Controller
 
     /**
      * Create new campaign action
+     * 
+     * @return void
      */
     public function newAction()
     {
@@ -69,11 +74,60 @@ class Mzax_Emarketing_Admin_CampaignController extends Mage_Adminhtml_Controller
             return $this->_forward('edit');
         }
         
+        $this->_title($this->__('eMarketing'))
+             ->_title($this->__('New Campaign'));
+        
         $this->loadLayout();
         $this->_setActiveMenu('promo/emarketing');
         $this->renderLayout();
         
     }
+    
+    
+    
+    /**
+     * Create new campaign from preset action
+     * 
+     * @return void
+     */
+    public function usePresetAction()
+    {
+        $presetName = $this->getRequest()->getParam('preset');
+        
+        if(!$presetName) {
+            $this->_redirect('*/*/new');
+            return;
+        }
+        
+        try {
+            /* @var $preset Mzax_Emarketing_Model_Campaign_Preset */
+            $preset = Mage::getModel('mzax_emarketing/campaign_preset')->load($presetName);
+            
+            $campaign = $preset->makeCampaign();
+            
+            Mage::register('current_campaign', $campaign);
+            
+            $this->_forward('new');
+        }
+        catch(Mage_Core_Exception $e) {
+            $this->_getSession()->addError($this->__("Failed to load preset"));
+            $this->_redirect('*/*/new');
+            return;
+        }
+        catch(Exception $e) {
+            if(Mage::getIsDeveloperMode()) {
+                $this->_getSession()->addError($e->getMessage());
+            }
+            else {
+                $this->_getSession()->addError($this->__("Failed to load preset"));
+            }
+            Mage::logException($e);
+            $this->_redirect('*/*/new');
+            return;
+        }
+    }
+    
+    
     
     
     
@@ -90,6 +144,12 @@ class Mzax_Emarketing_Admin_CampaignController extends Mage_Adminhtml_Controller
                 $campaign->setFilters($values['filters']);
             }
         }
+        else if($campaign->getId() && $this->_getSession()->getData('init_default_filters', true) == $campaign->getId()) {
+            $campaign->getRecipientProvider()->setDefaultFilters();
+        }
+        
+        $this->_title($this->__('eMarketing'))
+             ->_title($this->__('Edit %s', $campaign->getName()));
 
         $this->loadLayout();
         $this->_setActiveMenu('promo/emarketing');
@@ -139,26 +199,37 @@ class Mzax_Emarketing_Admin_CampaignController extends Mage_Adminhtml_Controller
                         }
                     }
                 }
-    
-    
+                
+                $initDefaultFilters = !$campaign->getId() && !$campaign->getPresetName();
                 $campaign->save();
+                
+                if($initDefaultFilters) {
+                    $this->_getSession()->setData('init_default_filters', $campaign->getId());
+                }
+                
                 
                 Mage::app()->cleanCache(array($campaign::CACHE_TAG));
                 
-                Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Campaign was successfully saved'));
+                if($campaign->getPresetName()) {
+                    $this->_getSession()->addSuccess($this->__('Campaign was successfully created from preset `%s`.', $campaign->getPresetName()));
+                    $this->_getSession()->addNotice($this->__("Double check your filter and segmentation settings!"));
+                }
+                else {
+                    $this->_getSession()->addSuccess($this->__('Campaign was successfully saved'));
+                }
                 Mage::dispatchEvent('adminhtml_campaign_save_after', array('campaign' => $campaign));
     
                 if ($redirectBack) {
                     $this->_redirect('*/*/edit', array(
-                            'id'    => $campaign->getId(),
-                            '_current'=>true
+                        'id'    => $campaign->getId(),
+                        '_current'=>true
                     ));
                     return;
                 }
             }
             catch (Exception $e){
-                Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
-                Mage::getSingleton('adminhtml/session')->setCampaignData($data);
+                $this->_getSession()->addError($e->getMessage());
+                $this->_getSession()->setCampaignData($data);
                 $this->getResponse()->setRedirect($this->getUrl('*/*/edit', array('id'=>$campaign->getId())));
                 return;
             }
@@ -281,13 +352,98 @@ class Mzax_Emarketing_Admin_CampaignController extends Mage_Adminhtml_Controller
                     $this->_getSession()->addSuccess($this->__("Campaign moved to archive."));
                 }
                 else {
-                    $this->_getSession()->addSuccess($this->__("Campaign sucessfully unarchived."));
+                    $this->_getSession()->addSuccess($this->__("Campaign successfully unarchived."));
                 }
             }
         }
         $this->_redirect('*/*/edit', array('_current' => true, 'tab' => 'tasks'));
     }
     
+    
+    
+    
+    public function duplicateAction()
+    {
+        $campaign = $this->_initCampaign();
+        if ($campaign->getId()) {
+            $newCampaign = clone $campaign;
+            $newCampaign->setName($this->__('Copy of %s', $campaign->getName()));
+            $newCampaign->isArchived(false);
+            $newCampaign->save();
+            $this->_getSession()->addSuccess($this->__("Campaign sucessfully duplicated."));
+        }
+        $this->_redirect('*/*/edit', array('_current' => true, 'tab' => 'tasks', 'id' => $newCampaign->getId()));
+    }
+    
+
+    /**
+     * Download campaign template
+     *
+     * @return void
+     */
+    public function downloadAction()
+    {
+        $campaign = $this->_initCampaign();
+        if ($campaign->getId()) {
+            try {
+                $data = $campaign->export();
+                
+                $fileName = preg_replace('/[^a-z0-9]+/', '-', strtolower($campaign->getName()));
+                $fileName.= Mzax_Emarketing_Model_Resource_Campaign_Preset::SUFFIX;
+                
+                $contentLength = strlen($data);
+                
+                $this->getResponse()
+                    ->setHttpResponseCode(200)
+                    ->setHeader('Pragma', 'public', true)
+                    ->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true)
+                    ->setHeader('Content-type', 'text/plain', true)
+                    ->setHeader('Content-Length', $contentLength)
+                    ->setHeader('Content-Disposition', 'attachment; filename="'.$fileName.'"')
+                    ->setHeader('Last-Modified', date('r'))
+                    ->setBody($data);
+                
+                return;
+            }
+            catch (Exception $e){
+                $this->_getSession()->addError($e->getMessage());
+            }
+        }
+        $this->_redirect('*/*');
+    }
+    
+    
+    
+    /**
+     * Install new preset from campaign
+     * 
+     * @return void
+     */
+    public function installAsPresetAction()
+    {
+        $campaign = $this->_initCampaign();
+        if ($campaign->getId()) {
+            try {
+                $data = $campaign->export();
+        
+                $filename = preg_replace('/[^a-z0-9]+/', '-', strtolower($campaign->getName()));
+                
+                $user = Mage::getSingleton('admin/session')->getUser();
+                
+                /* @var $resource Mzax_Emarketing_Model_Resource_Campaign_Preset */ 
+                $resource = Mage::getResourceSingleton('mzax_emarketing/campaign_preset');
+                $resource->install('local-' . $filename, $data, true, $user->getName());
+                
+                $this->_getSession()->addSuccess('Preset installed successfully');
+                $this->_redirect('*/*/new');
+                return;
+            }
+            catch (Exception $e){
+                $this->_getSession()->addError($e->getMessage());
+            }
+        }
+        $this->_redirect('*/*');
+    }
     
     
     
@@ -660,6 +816,9 @@ class Mzax_Emarketing_Admin_CampaignController extends Mage_Adminhtml_Controller
     {
         $campaign = $this->_initCampaign();
         
+        $this->_title($this->__('eMarketing'))
+             ->_title($this->__('Preview Email'));
+        
         $this->loadLayout('mzax_popup');
         $this->_addContent(
             $this->getLayout()->createBlock('mzax_emarketing/campaign_preview')->setCampaign($campaign));
@@ -701,7 +860,9 @@ class Mzax_Emarketing_Admin_CampaignController extends Mage_Adminhtml_Controller
         
         Mage::register('current_recipient', $recipient);
         
-
+        $this->_title($this->__('eMarketing'))
+             ->_title($this->__('Send Email'));
+        
         $this->loadLayout('mzax_popup');
         $this->renderLayout();
     }
@@ -771,10 +932,10 @@ class Mzax_Emarketing_Admin_CampaignController extends Mage_Adminhtml_Controller
         if ($campaign->getId()) {
             try {
                 $campaign->delete();
-                Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('mzax_emarketing')->__('Campaign was deleted'));
+                $this->_getSession()->addSuccess(Mage::helper('mzax_emarketing')->__('Campaign was deleted'));
             }
             catch (Exception $e){
-                Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+                $this->_getSession()->addError($e->getMessage());
             }
         }
         $this->_redirect('*/*');
@@ -813,7 +974,7 @@ class Mzax_Emarketing_Admin_CampaignController extends Mage_Adminhtml_Controller
                     $this->_getSession()->addError($this->__('Template not found'));
                 }
             }
-            Mage::getSingleton('adminhtml/session')->setCampaignData($data);
+            $this->_getSession()->setCampaignData($data);
         } 
         $this->getResponse()->setRedirect($this->getUrl('*/*/edit', array('id'=>$campaign->getId())));
     }

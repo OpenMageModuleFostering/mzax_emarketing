@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -25,19 +25,6 @@ abstract class Mzax_Emarketing_Model_Object_Filter_Main extends Mzax_Emarketing_
     public function getId()
     {
         return '1';
-    }
-    
-
-    
-    /**
-     * A main filter object should always provide
-     * its own object
-     *
-     * @return boolean
-     */
-    public function hasOwnObject()
-    {
-        return true;
     }
     
     

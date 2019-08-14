@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -24,7 +24,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.2.6
+ * @version 0.2.7
  */
 class Mzax_Emarketing_Model_Object_Filter_Order_Previous
     extends Mzax_Emarketing_Model_Object_Filter_Order_Abstract
@@ -58,6 +58,11 @@ class Mzax_Emarketing_Model_Object_Filter_Order_Previous
     }
     
     
+    public function acceptChild(Mzax_Emarketing_Model_Object_Filter_Component $child)
+    {
+        return true;
+    }
+    
     
     
     
@@ -66,18 +71,6 @@ class Mzax_Emarketing_Model_Object_Filter_Order_Previous
         return "Order | Has preceded or followed orders matching...";
     }
     
-    
-    
-    
-    /**
-     * The child filter will use order_id binding again which is ok
-     * 
-     * @return boolean
-     */
-    public function allowChildBinding($binding)
-    {
-        return $binding === 'order_id';
-    }
     
     
     

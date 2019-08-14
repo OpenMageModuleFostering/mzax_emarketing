@@ -1,8 +1,9 @@
 <?php
 /*
  * NOTICE:
- * This code has been slightly altered by Jacob Siefer to use old php namespaces.
+ * This code has been slightly altered by the Mzax_Emarketing module to use old php namespaces.
  */
+
 /*
  * This file is part of the Symfony package.
  *
@@ -101,9 +102,9 @@ class Symfony_Component_CssSelector_XPath_Extension_HtmlExtension extends Symfon
     public function translateDisabled(Symfony_Component_CssSelector_XPath_XPathExpr $xpath)
     {
         return $xpath->addCondition(
-            "("
-                ."@disabled and"
-                ."("
+            '('
+                .'@disabled and'
+                .'('
                     ."(name(.) = 'input' and @type != 'hidden')"
                     ." or name(.) = 'button'"
                     ." or name(.) = 'select'"
@@ -112,14 +113,14 @@ class Symfony_Component_CssSelector_XPath_Extension_HtmlExtension extends Symfon
                     ." or name(.) = 'fieldset'"
                     ." or name(.) = 'optgroup'"
                     ." or name(.) = 'option'"
-                .")"
-            .") or ("
+                .')'
+            .') or ('
                 ."(name(.) = 'input' and @type != 'hidden')"
                 ." or name(.) = 'button'"
                 ." or name(.) = 'select'"
                 ." or name(.) = 'textarea'"
-            .")"
-            ." and ancestor::fieldset[@disabled]"
+            .')'
+            .' and ancestor::fieldset[@disabled]'
         );
         // todo: in the second half, add "and is not a descendant of that fieldset element's first legend element child, if any."
     }
@@ -153,10 +154,10 @@ class Symfony_Component_CssSelector_XPath_Extension_HtmlExtension extends Symfon
                     ." or name(.) = 'textarea'"
                     ." or name(.) = 'keygen'"
                 .')'
-                ." and not (@disabled or ancestor::fieldset[@disabled])"
+                .' and not (@disabled or ancestor::fieldset[@disabled])'
             .') or ('
                 ."name(.) = 'option' and not("
-                    ."@disabled or ancestor::optgroup[@disabled]"
+                    .'@disabled or ancestor::optgroup[@disabled]'
                 .')'
             .')'
         );

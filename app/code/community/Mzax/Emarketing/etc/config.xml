@@ -10,7 +10,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -21,7 +21,7 @@
 <config>
     <modules>
         <Mzax_Emarketing>
-        	<version>0.2.6</version>
+        	<version>0.2.7</version>
 		</Mzax_Emarketing>
 	</modules>
     <global>
@@ -153,8 +153,10 @@
         		</customer_attribute>
         		<customer_address><model>mzax_emarketing/object_filter_customer_address</model></customer_address>
         		<customer_address_attribute><model>mzax_emarketing/object_filter_customer_address_attribute</model></customer_address_attribute>
+        		<customer_event><model>mzax_emarketing/object_filter_customer_event</model></customer_event>
         		
         		<order_table><model>mzax_emarketing/object_filter_order_table</model></order_table>
+        		<order_shipped><model>mzax_emarketing/object_filter_order_shippedAt</model></order_shipped>
         		<order_addrass><model>mzax_emarketing/object_filter_order_address</model></order_addrass>
         		<order_previous><model>mzax_emarketing/object_filter_order_previous</model></order_previous>
         		<order_campaign><model>mzax_emarketing/object_filter_order_campaign</model></order_campaign>
@@ -163,8 +165,8 @@
         		
         		<quote_table><model>mzax_emarketing/object_filter_quote_table</model></quote_table>
         		<quote_addrass><model>mzax_emarketing/object_filter_quote_address</model></quote_addrass>
-        		<quote_items><model>mzax_emarketing/object_filter_order_items</model></quote_items>
-        		<quote_item_table><model>mzax_emarketing/object_filter_order_item_table</model></quote_item_table>
+        		<quote_items><model>mzax_emarketing/object_filter_quote_items</model></quote_items>
+        		<quote_item_table><model>mzax_emarketing/object_filter_quote_item_table</model></quote_item_table>
         		
         		<addrass_street><model>mzax_emarketing/object_filter_address_street</model></addrass_street>
         		<addrass_city><model>mzax_emarketing/object_filter_address_city</model></addrass_city>

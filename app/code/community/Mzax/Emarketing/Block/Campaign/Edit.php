@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -52,7 +52,15 @@ class Mzax_Emarketing_Block_Campaign_Edit extends Mage_Adminhtml_Block_Widget_Fo
             return $text;
         }
         else {
-            return $this->__('New %s Campaign', Mage::getSingleton('mzax_emarketing/medium')->getOptionText($campaign->getData('medium')));
+            if($preset = $campaign->getPreset()) {
+                return $this->__('New %s - %s campaign', 
+                        Mage::getSingleton('mzax_emarketing/medium')->getOptionText($campaign->getData('medium')), 
+                        $preset->getName());
+            }
+            else {
+                return $this->__('New %s Campaign',
+                         Mage::getSingleton('mzax_emarketing/medium')->getOptionText($campaign->getData('medium')));
+            }
         }
     }
 

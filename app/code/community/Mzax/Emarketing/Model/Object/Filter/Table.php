@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -28,7 +28,7 @@
  * 
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.2.6
+ * @version 0.2.7
  */
 abstract class Mzax_Emarketing_Model_Object_Filter_Table
     extends Mzax_Emarketing_Model_Object_Filter_Abstract
@@ -139,7 +139,7 @@ abstract class Mzax_Emarketing_Model_Object_Filter_Table
      */
     public function acceptParent(Mzax_Emarketing_Model_Object_Filter_Component $parent)
     {
-        return $this->_acceptParent($parent, $this->_requireBinding);
+        return $parent->hasBinding($this->_requireBinding);
     }
     
     
@@ -457,24 +457,6 @@ abstract class Mzax_Emarketing_Model_Object_Filter_Table
     }
     
     
-    
-    /**
-     * Add hidden input field
-     * 
-     * @param string $name
-     * @param string $value
-     * @return Varien_Data_Form_Element_Abstract
-     */
-    protected function getHiddenField($name, $value)
-    {
-        return $this->getForm()->addField($name, 'hidden', array(
-            'name'    => $name,
-            'class'   => 'hidden',
-            'no_span' => true,
-            'is_meta' => true,
-            'value'   => $value
-        ));
-    }
     
     
     

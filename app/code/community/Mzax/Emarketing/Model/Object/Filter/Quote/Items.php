@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -23,7 +23,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.2.6
+ * @version 0.2.7
  */
 class Mzax_Emarketing_Model_Object_Filter_Quote_Items
     extends Mzax_Emarketing_Model_Object_Filter_Quote_Abstract
@@ -52,7 +52,7 @@ class Mzax_Emarketing_Model_Object_Filter_Quote_Items
     /**
      * Use order item object
      * 
-     * @return Mzax_Emarketing_Model_Object_OrderItem
+     * @return Mzax_Emarketing_Model_Object_QuoteItem
      */
     public function getObject()
     {
@@ -94,11 +94,22 @@ class Mzax_Emarketing_Model_Object_Filter_Quote_Items
         $expectation = $this->getDataSetDefault('expectation', self::DEFAULT_EXPECTATION);
         
         $select = $this->_combineConditions($conditions, $aggregator, $expectation);
-        $select->useTemporaryTable($this->getTempTableName());
         
+        // if value can match zero include all records
+        if($this->checkIfMatchZero('value')) {
+        
+            $zeroRecords = $this->getQuery();
+            // assume all quotes have items, no right join required
+            $zeroRecords->setColumn('sum_field', new Zend_Db_Expr('0'));
+            $zeroRecords->setColumn('matches', new Zend_Db_Expr('0'));
+            
+            $select = $this->_select()->union(array($zeroRecords, $select));
+        }
+        
+        $query->useTemporaryTable($this->getTempTableName());
         $query->joinSelect('quote_id', $select, 'filter');
         $query->addBinding('value', new Zend_Db_Expr('SUM(`filter`.`sum_field`)'));
-        $query->having($this->getWhereSql('value', 'SUM(`filter`.`sum_field`)'));
+        $query->having($this->getWhereSql('value', '{value}'));
         $query->group();
     }
     
@@ -116,9 +127,17 @@ class Mzax_Emarketing_Model_Object_Filter_Quote_Items
     public function prepareGridColumns(Mzax_Emarketing_Block_Filter_Object_Grid $grid)
     {
         parent::prepareGridColumns($grid);
+        
+        $sumOptions = $this->getSumOptions();
+        if(isset($sumOptions[$this->getSum()])) {
+            $title = ucwords($sumOptions[$this->getSum()]);
+        }
+        else {
+            $title = $this->__('Total');
+        }
     
         $grid->addColumn('value', array(
-            'header'    => $this->__('Total'),
+            'header'    => $title,
             'index'     => 'value',
             'type'      => 'number'
         ));

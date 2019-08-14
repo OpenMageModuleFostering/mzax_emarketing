@@ -1,8 +1,9 @@
 <?php
 /*
  * NOTICE:
- * This code has been slightly altered by Jacob Siefer to use old php namespaces.
+ * This code has been slightly altered by the Mzax_Emarketing module to use old php namespaces.
  */
+
 /*
  * This file is part of the Symfony package.
  *
@@ -103,7 +104,7 @@ class Symfony_Component_CssSelector_Parser_TokenStream
             throw new Symfony_Component_CssSelector_Exception_InternalErrorException('Unexpected token stream end.');
         }
 
-        return $this->tokens[$this->cursor ++];
+        return $this->tokens[$this->cursor++];
     }
 
     /**

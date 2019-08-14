@@ -1,8 +1,9 @@
 <?php
 /*
  * NOTICE:
- * This code has been slightly altered by Jacob Siefer to use old php namespaces.
+ * This code has been slightly altered by the Mzax_Emarketing module to use old php namespaces.
  */
+
 /*
  * This file is part of the Symfony package.
  *
@@ -24,7 +25,7 @@
  *
  * @author Jean-François Simon <jeanfrancois.simon@sensiolabs.com>
  */
-class Symfony_Component_CssSelector_Exception_SyntaxErrorException extends Symfony_Component_CssSelector_Exception_ParseException implements Symfony_Component_CssSelector_Exception_ExceptionInterface
+class Symfony_Component_CssSelector_Exception_SyntaxErrorException extends Symfony_Component_CssSelector_Exception_ParseException
 {
     /**
      * @param string $expectedValue

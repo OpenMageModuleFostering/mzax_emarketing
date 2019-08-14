@@ -1,7 +1,7 @@
 <?php
 /*
  * NOTICE:
- * This code has been slightly altered by Jacob Siefer to use old php namespaces.
+ * This code has been slightly altered by the Mzax_Emarketing module to use old php namespaces.
  */
 /******************************************************************************
  * Copyright (c) 2010 Jevon Wright and others.
@@ -38,6 +38,9 @@ class Html2Text_Html2Text {
 	 * @throws Html2Text_Html2TextException if the HTML could not be loaded as a {@link DOMDocument}
 	 */
 	static function convert($html) {
+		// replace &nbsp; with spaces
+		$html = str_replace("&nbsp;", " ", $html);
+
 		$html = static::fixNewlines($html);
 
 		$doc = new DOMDocument();
@@ -141,14 +144,27 @@ class Html2Text_Html2Text {
 			case "h4":
 			case "h5":
 			case "h6":
-				// add two newlines
+			case "ol":
+			case "ul":
+				// add two newlines, second line is added below
 				$output = "\n";
 				break;
 
+			case "td":
+			case "th":
+				// add tab char to separate table fields
+			   $output = "\t";
+			   break;
+
+			case "tr":
 			case "p":
 			case "div":
 				// add one line
 				$output = "\n";
+				break;
+
+			case "li":
+				$output = "- ";
 				break;
 
 			default:
@@ -226,6 +242,11 @@ class Html2Text_Html2Text {
 						$output .= "\n";
 						break;
 				}
+				break;
+
+			case "li":
+				$output .= "\n";
+				break;
 
 			default:
 				// do nothing

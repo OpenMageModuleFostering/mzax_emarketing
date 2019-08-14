@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -49,7 +49,7 @@ abstract class Mzax_Emarketing_Model_Object_Filter_Column
     
     public function acceptParent(Mzax_Emarketing_Model_Object_Filter_Component $parent)
     {
-        return $this->_acceptParent($parent, $this->_requireBinding);
+        return $parent->hasBinding($this->_requireBinding);
     }
     
     

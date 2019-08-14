@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -24,6 +24,10 @@ class Mzax_Emarketing_Admin_OutboxController extends Mage_Adminhtml_Controller_A
     
     public function indexAction()
     {
+        $this->_title($this->__('eMarketing'))
+             ->_title($this->__('Outbox'));
+        
+        
         $this->loadLayout();
         $this->_setActiveMenu('promo/emarketing');
         
@@ -40,6 +44,9 @@ class Mzax_Emarketing_Admin_OutboxController extends Mage_Adminhtml_Controller_A
     public function emailAction()
     {
         $message = $this->_initEmail();
+        
+        $this->_title($this->__('eMarketing'))
+             ->_title($this->__('Outbox Email'));
         
         $this->loadLayout();
         $this->_setActiveMenu('promo/emarketing');
@@ -177,7 +184,7 @@ class Mzax_Emarketing_Admin_OutboxController extends Mage_Adminhtml_Controller_A
     {
         $messages = $this->getRequest()->getPost('messages');
         if(!empty($messages)) {
-            if($count = $this->getOutbox()->sendEmails(array('ids' => $messages))) {
+            if($count = $this->getOutbox()->sendEmails(array('ids' => $messages, 'force' => true))) {
                 $this->_getSession()->addSuccess(
                     $this->__('%s emails sent.', $count)
                 );

@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -40,7 +40,7 @@ class Mzax_Emarketing_Block_Campaign_Edit_Tab_Filters extends Mage_Adminhtml_Blo
             ->setNewFilterUrl($this->getUrl('*/*/newFilterHtml', array('campaign' => $campaign->getId())));
 
         $fieldset = $form->addFieldset('conditions_fieldset', array(
-            'legend'=>Mage::helper('salesrule')->__('Only send email to people matching the filters below')
+            'legend'=>Mage::helper('salesrule')->__('Only send campaign to people matching the filters below')
         ))->setRenderer($renderer);
         
         

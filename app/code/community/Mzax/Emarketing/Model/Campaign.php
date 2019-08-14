@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.6
+ * @version     0.2.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -31,6 +31,7 @@
  * @method Mzax_Emarketing_Model_Campaign setCheckFrequency(string $value)
  * @method Mzax_Emarketing_Model_Campaign setLastCheck(string $value)
  * @method Mzax_Emarketing_Model_Campaign setMinResendInterval(string $value)
+ * @method Mzax_Emarketing_Model_Campaign setExpireTime(string $value)
  * @method Mzax_Emarketing_Model_Campaign setAbtestEnable(string $value)
  * @method Mzax_Emarketing_Model_Campaign setAbtestTraffic(string $value)
  * @method Mzax_Emarketing_Model_Campaign setStoreId(string $value)
@@ -53,6 +54,7 @@
  * @method string getCheckFrequency()
  * @method string getLastCheck()
  * @method string getMinResendInterval()
+ * @method string getExpireTime()
  * @method string getAbtestEnable()
  * @method string getAbtestTraffic()
  * @method string getStoreId()
@@ -176,6 +178,10 @@ class Mzax_Emarketing_Model_Campaign
     protected function _construct()
     {
         $this->_init('mzax_emarketing/campaign');
+        $this->setMinResendInterval(0);
+        $this->setCheckFrequency(720);
+        $this->setExpireTime(720);
+        $this->setIdentity('emarketing');
     }
     
     
@@ -226,6 +232,13 @@ class Mzax_Emarketing_Model_Campaign
         // save all variations if loaded
         if( $this->_variations ) {
             $this->_variations->save();
+        }
+        
+        if( $variations = $this->getClonedVariations() ) {
+            foreach($variations as $variation) {
+                $variation->save();
+            }
+            $this->setClonedVariations(false);
         }
     }
     
@@ -781,6 +794,24 @@ class Mzax_Emarketing_Model_Campaign
     
     
     /**
+     * Check number of recipients
+     *
+     * @return integer
+     */
+    public function countRecipients()
+    {
+        $count = $this->getData('recipients_count');
+        if($count === null) {
+            $count = $this->getResource()->countRecipients($this);
+            $this->setData('recipients_count', $count);
+        }
+        return $count;
+    }
+    
+    
+    
+    
+    /**
      * Try to bind recipients to goals
      * 
      * The recipient provider has to do that
@@ -1026,6 +1057,68 @@ class Mzax_Emarketing_Model_Campaign
     
     
 
+
+    
+    
+    
+    
+    
+    //--------------------------------------------------------------------------
+    //
+    //  Misc
+    //
+    //--------------------------------------------------------------------------
+    
+    
+    
+    /**
+     * Convert to campaign to encoded string
+     *
+     * @return string
+     */
+    public function export()
+    {
+        // set current extension version
+        $this->setVersion(Mage::helper('mzax_emarketing')->getVersion());
+        
+        $filterData = $this->getRecipientProvider()->export();
+        $this->setFilterExport(Zend_Json::encode($filterData));
+        
+        $json = $this->toJson(array(
+            'version',
+            'name',
+            'description',
+            'check_frequency',
+            'min_resend_interval',
+            'autologin',
+            'expire_time',
+            'provider',
+            'filter_export',
+            'medium',
+            'medium_json'));
+        
+        return base64_encode($json);
+    }
+    
+    
+    
+    public function __clone()
+    {
+        $variations = array();
+        foreach($this->getVariations() as $variation) {
+            $newVariation = clone $variation;
+            $newVariation->setCampaign($this);
+            $variations[] = $newVariation;
+        }
+        $this->_variations = null;
+        
+        $this->setDuplicateOf($this->getId());
+        $this->setId(null);
+        $this->setCreatedAt(null);
+        $this->setUpdatedAt(null);
+        $this->setClonedVariations($variations);
+        
+    }
     
     
 }
