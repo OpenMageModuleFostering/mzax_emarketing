@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.0
+ * @version     0.4.1
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -24,7 +24,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.4.0
+ * @version 0.4.1
  */
 class Mzax_Emarketing_Model_Recipient_Provider_Order
     extends Mzax_Emarketing_Model_Recipient_Provider_Abstract 
@@ -105,15 +105,34 @@ class Mzax_Emarketing_Model_Recipient_Provider_Order
     
     
     
+    /**
+     * Prepare order recipient
+     * 
+     * Check if a customer is available
+     * if so, use email from customer instead - it may have changed
+     * 
+     * @return void
+     */
     public function prepareRecipient(Mzax_Emarketing_Model_Recipient $recipient)
     {
         /* @var $order Mage_Sales_Model_Order */
         $order = Mage::getModel('sales/order')->load($recipient->getObjectId());
                 
         $recipient->setOrder($order);
-        $recipient->setCustomer($order->getCustomer());
         $recipient->setEmail($order->getCustomerEmail());
         $recipient->setName($order->getCustomerName());
+        
+        if($order->getCustomerId()) 
+        {
+            /* @var $customer Mage_Customer_Model_Customer */
+            $customer = Mage::getModel('customer/customer')->load($order->getCustomerId());
+            
+            if($customer->getId()) {
+                $order->setCustomer($customer);
+                $recipient->setCustomer($customer);
+                $recipient->setEmail($customer->getEmail());
+            }
+        }
     }
     
     

@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.0
+ * @version     0.4.1
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -42,7 +42,7 @@ class Mzax_Emarketing_Model_Campaign_Preset extends Varien_Object
     public function validateVersion()
     {
         if($version = $this->getVersion()) {
-            return (version_compare($version, Mage::helper('mzax_emarketing')->getVersion()) >= 0);
+            return (version_compare($version, Mage::helper('mzax_emarketing')->getVersion()) < 0);
         }
         return true;
     }
