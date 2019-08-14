@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.6
+ * @version     0.4.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -25,7 +25,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.4.6
+ * @version 0.4.7
  */
 class Mzax_Emarketing_Block_Unsubscribe extends Mage_Core_Block_Template
 {
@@ -73,6 +73,7 @@ class Mzax_Emarketing_Block_Unsubscribe extends Mage_Core_Block_Template
         /* @var $collection Mzax_Emarketing_Model_Resource_Newsletter_List_Collection */
         $collection = Mage::getResourceModel('mzax_emarketing/newsletter_list_collection');
         $collection->addSubscriberToFilter($subscriber);
+        $collection->addStoreFilter(Mage::app()->getStore());
 
         return $collection;
     }
@@ -87,6 +88,7 @@ class Mzax_Emarketing_Block_Unsubscribe extends Mage_Core_Block_Template
         /* @var $collection Mzax_Emarketing_Model_Resource_Newsletter_List_Collection */
         $collection = Mage::getResourceModel('mzax_emarketing/newsletter_list_collection');
         $collection->addSubscriberToFilter($subscriber);
+        $collection->addStoreFilter(Mage::app()->getStore());
 
         return $collection;
     }

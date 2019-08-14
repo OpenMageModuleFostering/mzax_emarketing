@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  *
- * @version     0.4.6
+ * @version     0.4.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -102,6 +102,21 @@ class Mzax_Emarketing_Block_Newsletter_List_Edit_Tab_Settings extends Mage_Admin
         ));
 
 
+
+        if (!Mage::app()->isSingleStoreMode()) {
+            $fieldset->addField('store_ids', 'multiselect', array(
+                'name'      => 'store_ids[]',
+                'label'     => $this->__('Store View'),
+                'title'     => $this->__('Store View'),
+                'required'  => true,
+                'values'    => Mage::getSingleton('adminhtml/system_store')->getStoreValuesForForm(false, true),
+            ));
+        }
+        else {
+            $fieldset->addField('store_ids', 'hidden', array(
+                'name'      => 'store_ids[]'
+            ));
+        }
 
 
         $form->addValues($list->getData());

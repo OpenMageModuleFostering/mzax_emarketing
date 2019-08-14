@@ -17,21 +17,28 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-/**
- * 
- * @author Jacob Siefer
- *
- */
-abstract class Mzax_Emarketing_Model_Object_Filter_Customer_Abstract
-    extends Mzax_Emarketing_Model_Object_Filter_Abstract
-{
-    
-    
-    public function acceptParent(Mzax_Emarketing_Model_Object_Filter_Component $parent)
-    {
-        return $parent->hasBinding('customer_id');
-    }
-    
-    
-    
-}
+
+
+/* @var $installer Mzax_Emarketing_Model_Resource_Setup */
+$installer  = $this;
+$installer->startSetup();
+
+$connection = $installer->getConnection();
+
+
+$listTable = $installer->getTable('mzax_emarketing/newsletter_list');
+
+
+$connection->addColumn($listTable, 'store_ids', array(
+    'nullable' => false,
+    'type'     => Varien_Db_Ddl_Table::TYPE_TEXT,
+    'length'   => 255,
+    'after'    => 'list_id',
+    'comment'  => 'Store Ids',
+    'default'  => Mage_Core_Model_App::ADMIN_STORE_ID
+));
+
+
+
+
+$installer->endSetup();

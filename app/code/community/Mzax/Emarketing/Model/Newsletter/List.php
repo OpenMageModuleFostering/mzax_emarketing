@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.6
+ * @version     0.4.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -58,6 +58,25 @@ class Mzax_Emarketing_Model_Newsletter_List
     protected function _construct()
     {
         $this->_init('mzax_emarketing/newsletter_list');
+    }
+
+
+
+
+    protected function _beforeSave()
+    {
+        // serialize store id
+        $storeIds = $this->getData('store_ids');
+        if(empty($storeIds)) {
+            $storeIds = Mage_Core_Model_App::ADMIN_STORE_ID;
+        }
+        if(is_array($storeIds)) {
+            $storeIds = array_filter($storeIds, 'is_numeric');
+            $storeIds = implode(',', $storeIds);
+        }
+        $this->setData('store_ids', $storeIds);
+
+        return parent::_beforeSave();
     }
 
 
@@ -163,5 +182,72 @@ class Mzax_Emarketing_Model_Newsletter_List
     }
 
 
+
+    /**
+     * Set store ids
+     *
+     * @param array $storeIds
+     * @return $this
+     */
+    public function setStoreIds(array $storeIds)
+    {
+        $storeIds = array_filter($storeIds, 'is_numeric');
+        $this->setData('store_ids', implode(',', $storeIds));
+
+        return $this;
+    }
+
+
+    /**
+     * Retrieve all store ids
+     *
+     * @return array
+     */
+    public function getStoreIds()
+    {
+        $ids = $this->getData('store_ids');
+        if(empty($ids)) {
+            return array(Mage::app()->getStore(true)->getId());
+        }
+        return explode(',', $ids);
+    }
+
+
+    /**
+     * Check if list is allowed for specified store
+     *
+     *
+     * @param mixed $store
+     * @return bool
+     */
+    public function allowStore($store)
+    {
+        $store = Mage::app()->getStore($store);
+        $storeIds = $this->getStoreIds();
+
+        // either store is allowed
+        if(in_array($store->getId(), $storeIds)) {
+            return true;
+        }
+
+        // or all stores are allowed
+        return in_array(Mage_Core_Model_App::ADMIN_STORE_ID, $storeIds);
+    }
+
+
+    /**
+     *
+     *
+     * @param string $key
+     * @param null $index
+     * @return mixed
+     */
+    public function getData($key='', $index=null)
+    {
+        if($key === 'allowed_stores') {
+            return $this->getStoreIds();
+        }
+        return parent::getData($key, $index);
+    }
 
 }

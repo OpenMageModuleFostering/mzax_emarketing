@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.6
+ * @version     0.4.7
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -110,6 +110,19 @@ class Mzax_Emarketing_Block_Outbox_Email_Form extends Mage_Adminhtml_Block_Widge
             'note'              => $this->__('The plain text version of this email'),
         ));
         
+
+
+        $fieldset->addField('log', 'ace', array(
+            'name'              => 'log',
+            'label'             => $this->__('Log'),
+            'title'             => $this->__('Log'),
+            'allow_fullscreen'  => false,
+            'mode'              => 'ace/mode/text',
+            'style'             => 'min-height:5em',
+            'readonly'          => true,
+            'autosize'          => true,
+            'value'             => $this->getData('log')
+        ));
         
         
         
