@@ -9,7 +9,6 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  *
- * @version     0.4.9
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -21,50 +20,46 @@
 
 /**
  * SalesRule Oberserver
- * 
- * @author Jacob Siefer
- * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.4.9
  */
 class Mzax_Emarketing_Model_Observer_SalesRule extends Mzax_Emarketing_Model_Observer_Abstract
 {
-	
-    
     /**
      * Register emarketing sales rule conditions
-     * 
+     *
      * @see Mzax_Emarketing_Model_SalesRule_Condition_Emarketing
      * @see Mage_SalesRule_Model_Rule_Condition_Combine::getNewChildSelectOptions()
+     *
      * @event salesrule_rule_condition_combine
+     *
      * @param $observer
+     *
+     * @return void
      */
     public function addConditions($observer)
     {
         $conditions = $observer->getAdditional()->getConditions();
-        if(!$conditions) {
+        if (!$conditions) {
             $conditions = array();
         }
-        
+
         /* @var $condition Mzax_Emarketing_Model_SalesRule_Condition_Emarketing */
         $condition = Mage::getModel('mzax_emarketing/salesRule_condition_emarketing');
-        
+
         $attributes = $condition->loadAttributeOptions()->getAttributeOption();
-        
+
         $values = array();
-        foreach($attributes as $attribute => $label) {
+        foreach ($attributes as $attribute => $label) {
             $values[] = array(
                 'value' => "mzax_emarketing/salesRule_condition_emarketing|".$attribute,
                 'label' => $label
             );
         }
-        
+
         $conditions[] = array(
             'value' => $values,
             'label' => "Emarketing"
         );
-        
+
         $observer->getAdditional()->setConditions($conditions);
     }
-    
-    
 }

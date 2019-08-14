@@ -9,7 +9,6 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  *
- * @version     0.4.9
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -18,26 +17,24 @@
  */
 
 
-
 /**
- * Emarketing Sales Rule Condition
- * 
- * 
- * @method string getUnit()
- * @method string getCampaign()
- * @method string getValue()
- *
- * @author Jacob Siefer
- * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.4.9
+ * Interface Mzax_Emarketing_Model_SalesRule_ICouponManager
  */
 interface Mzax_Emarketing_Model_SalesRule_ICouponManager
 {
-    
-    
+    /**
+     * Add coupon instance
+     *
+     * @param Mage_SalesRule_Model_Coupon $coupon
+     *
+     * @return mixed
+     */
     public function addCoupon(Mage_SalesRule_Model_Coupon $coupon);
-    
+
+    /**
+     * Retrieve all coupon instances
+     *
+     * @return Mage_SalesRule_Model_Coupon[]
+     */
     public function getCoupons();
-    
-    
 }

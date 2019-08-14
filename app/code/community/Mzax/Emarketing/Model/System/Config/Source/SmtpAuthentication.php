@@ -1,15 +1,14 @@
 <?php
 /**
  * Mzax Emarketing (www.mzax.de)
- * 
+ *
  * NOTICE OF LICENSE
- * 
+ *
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is bundled with this Extension in the file LICENSE.
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
- * 
- * @version     0.4.9
+ *
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -18,28 +17,29 @@
  */
 
 
-
+/**
+ * Class Mzax_Emarketing_Model_System_Config_Source_SmtpAuthentication
+ */
 class Mzax_Emarketing_Model_System_Config_Source_SmtpAuthentication
 {
-    
-    public function toOptionArray($isMultiselect=false)
+    /**
+     * Retrieve smtp authentication options
+     *
+     * @return array
+     */
+    public function toOptionArray()
     {
         $options = array();
-        
+
         $options[] = array(
-            'value' => 'login', 
+            'value' => 'login',
             'label' => 'Login'
         );
         $options[] = array(
             'value' => 'Crammd5',
             'label' => 'CRAM-MD5'
         );
+
         return $options;
     }
-    
-    
-    
-    
-    
-    
 }

@@ -24,6 +24,8 @@
  * @see http://www.w3.org/TR/selectors/#specificity
  *
  * @author Jean-François Simon <jeanfrancois.simon@sensiolabs.com>
+ *
+ * @internal
  */
 class Symfony_Component_CssSelector_Node_Specificity
 {

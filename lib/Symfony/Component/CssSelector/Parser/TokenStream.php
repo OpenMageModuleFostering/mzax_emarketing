@@ -25,6 +25,8 @@
  * which is copyright Ian Bicking, @see https://github.com/SimonSapin/cssselect.
  *
  * @author Jean-François Simon <jeanfrancois.simon@sensiolabs.com>
+ *
+ * @internal
  */
 class Symfony_Component_CssSelector_Parser_TokenStream
 {
@@ -87,9 +89,9 @@ class Symfony_Component_CssSelector_Parser_TokenStream
     /**
      * Returns next token.
      *
-     * @throws Symfony_Component_CssSelector_Exception_InternalErrorException If there is no more token
-     *
      * @return Symfony_Component_CssSelector_Parser_Token
+     *
+     * @throws Symfony_Component_CssSelector_Exception_InternalErrorException If there is no more token
      */
     public function getNext()
     {
@@ -135,9 +137,9 @@ class Symfony_Component_CssSelector_Parser_TokenStream
     /**
      * Returns nex identifier token.
      *
-     * @throws Symfony_Component_CssSelector_Exception_SyntaxErrorException If next token is not an identifier
-     *
      * @return string The identifier token value
+     *
+     * @throws Symfony_Component_CssSelector_Exception_SyntaxErrorException If next token is not an identifier
      */
     public function getNextIdentifier()
     {
@@ -153,9 +155,9 @@ class Symfony_Component_CssSelector_Parser_TokenStream
     /**
      * Returns nex identifier or star delimiter token.
      *
-     * @throws Symfony_Component_CssSelector_Exception_SyntaxErrorException If next token is not an identifier or a star delimiter
-     *
      * @return null|string The identifier token value or null if star found
+     *
+     * @throws Symfony_Component_CssSelector_Exception_SyntaxErrorException If next token is not an identifier or a star delimiter
      */
     public function getNextIdentifierOrStar()
     {

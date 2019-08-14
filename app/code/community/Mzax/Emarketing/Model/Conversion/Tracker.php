@@ -1,15 +1,14 @@
 <?php
 /**
  * Mzax Emarketing (www.mzax.de)
- * 
+ *
  * NOTICE OF LICENSE
- * 
+ *
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is bundled with this Extension in the file LICENSE.
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
- * 
- * @version     0.4.9
+ *
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -17,27 +16,45 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
+
+
 /**
- * 
- * @method string getCreatedAt()
- * @method string getUpdatedAt()
- * @method string getTitle()
- * @method string getDescription()
- * @method string getIsActive()
- * @method string getIsDefault()
- * @method string getIsAggregated()
- * @method string getGoalType()
- * @method string getFilters()
- * 
- * @author Jacob Siefer
  *
+ * @method string getCreatedAt()
+ * @method $this setCreatedAt(string $value)
+ *
+ * @method string getUpdatedAt()
+ * @method $this setUpdatedAt(string $value)
+ *
+ * @method string getTitle()
+ * @method $this setTitle(string $value)
+ *
+ * @method string getDescription()
+ * @method $this setDescription(string $value)
+ *
+ * @method string getIsActive()
+ * @method $this setIsActive(bool $value)
+ *
+ * @method string getIsDefault()
+ * @method $this setIsDefault(bool $value)
+ *
+ * @method string getIsAggregated()
+ * @method $this setIsAggregated(bool $value)
+ *
+ * @method string getGoalType()
+ * @method $this setGoalType(string $value)
+ *
+ * @method string getFilters()
+ * @method $this setFilters(string $value)
+ *
+ * @method string getFilterData()
+ * @method $this setFilterData(string $json)
+ *
+ * @method Mzax_Emarketing_Model_Resource_Conversion_Tracker getResource()
  */
 class Mzax_Emarketing_Model_Conversion_Tracker
     extends Mage_Core_Model_Abstract
 {
-
-    
-    
     /**
      * Prefix of model events names
      *
@@ -53,119 +70,125 @@ class Mzax_Emarketing_Model_Conversion_Tracker
      * @var string
      */
     protected $_eventObject = 'tracker';
-    
-    
+
     /**
-     * 
+     *
      * @var Mzax_Emarketing_Model_Conversion_Goal_Abstract
      */
     protected $_goal;
-    
-    
-    
+
+    /**
+     * Model Constructor
+     *
+     * @return void
+     */
     protected function _construct()
     {
         $this->_init('mzax_emarketing/conversion_tracker');
     }
-    
-    
 
+    /**
+     * Before model save
+     *
+     * @return void
+     */
     protected function _beforeSave()
     {
-        if($this->_goal) {
+        if ($this->_goal) {
             $json = $this->_goal->getFilter()->asJson();
-            if($this->getFilterData() !== $json) {
+            if ($this->getFilterData() !== $json) {
                 $this->setFilterData($json);
                 $this->setIsAggregated(false);
             }
         }
-        
+
         $campaigns = $this->getData('campaign_ids');
-        if(is_array($campaigns)) {
-            $campaigns = array_filter($campaigns, function($id) {
+        if (is_array($campaigns)) {
+            $campaigns = array_filter($campaigns, function ($id) {
                 return (bool) ($id === '*' || ((int) $id));
             });
             $this->setData('campaign_ids', implode(',', $campaigns));
         }
-        
+
         parent::_beforeSave();
     }
-    
-    
-    
+
     /**
-     * 
-     * 
-     * @return array
+     * Retrieve campaign ids
+     *
+     * @return string[]
      */
     public function getCampaignIds()
     {
         $data = $this->getData('campaign_ids');
-        if(!is_array($data)) {
+        if (!is_array($data)) {
             $data = $data ? explode(',', $data) : array();
             $this->setData('campaign_ids', $data);
         }
+
         return $data;
     }
-    
-    
-    
-    
+
     /**
-     * Retreive goal model
-     * 
+     * Retrieve goal model
+     *
+     * @param bool $validateFilters
+     *
      * @return Mzax_Emarketing_Model_Conversion_Goal_Abstract
+     * @throws Mage_Exception
      */
     public function getGoal($validateFilters = false)
     {
-        if(!$this->_goal && $this->getGoalType()) {
-            $this->_goal = Mage::getSingleton('mzax_emarketing/conversion_goal')->factory($this->getGoalType());
-            if(!$this->_goal) {
-                throw new Mage_Exception(Mage::helper('mzax_emarketing')->__('Failed to initialise goal type “%s”. This goal type might not be installed on your system.', $this->getGoalType()));
+        if (!$this->_goal && $this->getGoalType()) {
+            /** @var Mzax_Emarketing_Model_Conversion_Goal $factory */
+            $factory = Mage::getSingleton('mzax_emarketing/conversion_goal');
+
+            $this->_goal = $factory->factory($this->getGoalType());
+            if (!$this->_goal) {
+                throw new Mage_Exception(
+                    Mage::helper('mzax_emarketing')->__(
+                        'Failed to initialise goal type “%s”. This goal type might not be installed on your system.',
+                        $this->getGoalType()
+                    )
+                );
             }
             $this->_goal->setTracker($this, $validateFilters);
         }
+
         return $this->_goal;
     }
-    
-    
-    
-    
+
     /**
      * Set this tracker as default tracker
-     * 
-     * @return Mzax_Emarketing_Model_Conversion_Tracker
+     *
+     * @return $this
      */
     public function setAsDefault()
     {
         $this->getResource()->setDefaultTracker($this->getId());
+
         return $this;
     }
-    
-    
-    
+
     /**
      * Check if tracker has any filters defined
-     * 
+     *
      * @return boolean
      */
     public function hasFilters()
     {
         return $this->getGoal()->hasFilters();
     }
-    
-    
-    
+
     /**
      * Is current default tracker
-     * 
+     *
      * @return boolean
      */
     public function isDefault()
     {
-        return (bool) $this->getIsDefault();
+        return (bool)$this->getIsDefault();
     }
-    
 
     /**
      * Is tracker aggregated
@@ -174,11 +197,9 @@ class Mzax_Emarketing_Model_Conversion_Tracker
      */
     public function isAggregated()
     {
-        return (bool) $this->getIsAggregated();
+        return (bool)$this->getIsAggregated();
     }
-    
 
-    
     /**
      * Is tracker active
      *
@@ -186,51 +207,44 @@ class Mzax_Emarketing_Model_Conversion_Tracker
      */
     public function isActive()
     {
-        return (bool) $this->getIsActive();
+        return (bool)$this->getIsActive();
     }
-    
-    
-    
+
     /**
      * Is tracking all campaigns
-     * 
+     *
      * @return boolean
      */
     public function isTrackingAllCampaigns()
     {
         return in_array('*', $this->getCampaignIds());
     }
-    
-    
-    
+
     /**
-     * 
+     * Retrieve campaigns tracked by this tracker
+     *
      * @return Mzax_Emarketing_Model_Resource_Campaign_Collection
      */
     public function getCampaigns()
-    {        
+    {
         /* @var $collection Mzax_Emarketing_Model_Resource_Campaign_Collection */
         $collection = Mage::getResourceModel('mzax_emarketing/campaign_collection');
         $collection->addArchiveFilter(false);
-        
-        if(!$this->isTrackingAllCampaigns()) {
+
+        if (!$this->isTrackingAllCampaigns()) {
             $collection->addIdFilter($this->getCampaignIds());
         }
-        
+
         return $collection;
     }
-    
-    
-    
-    
-    
-    
+
     /**
      * Aggregate data for this tracker
-     * 
+     *
      * @param string $incremental
      * @param Mzax_Emarketing_Model_Campaign $campaign
-     * @return Mzax_Emarketing_Model_Conversion_Tracker
+     *
+     * @return $this
      */
     public function aggregate($incremental = null, Mzax_Emarketing_Model_Campaign $campaign = null)
     {
@@ -239,56 +253,58 @@ class Mzax_Emarketing_Model_Conversion_Tracker
             'tracker_id'  => $this->getId(),
             'verbose'     => false
         ));
-        
-        Mage::dispatchEvent($this->_eventPrefix . '_aggregate', 
-                array('options' => $options, 'campaign' => $campaign, 'tracker' => $this));
-        
-        if($incremental) {
-            $options->setIncremental((int) $incremental);
+
+        Mage::dispatchEvent(
+            $this->_eventPrefix . '_aggregate',
+            array(
+                'options' => $options,
+                'campaign' => $campaign,
+                'tracker' => $this
+            )
+        );
+
+        if ($incremental) {
+            $options->setData('incremental', (int)$incremental);
         }
-        if($campaign) {
-            if($campaign instanceof Mzax_Emarketing_Model_Campaign) {
+        if ($campaign) {
+            if ($campaign instanceof Mzax_Emarketing_Model_Campaign) {
                 $campaign = $campaign->getId();
             }
-            $options->setCampaignId((int) $campaign);
+            $options->setData('campaign_id', (int)$campaign);
         }
-        
+
         /* @var $report Mzax_Emarketing_Model_Report */
         $report = Mage::getSingleton('mzax_emarketing/report');
         $report->aggregate($options->toArray());
-    
+
         return $this;
     }
-    
-
 
     /**
      * Load tracker data from file
      *
      * @param string $filename
+     *
+     * @return $this
      * @throws Mage_Exception
-     * @return Mzax_Emarketing_Model_Conversion_Tracker
      */
     public function loadFromFile($filename)
     {
-        if(!file_exists($filename)) {
+        if (!file_exists($filename)) {
             throw new Mage_Exception("File not found ($filename)");
         }
-        return $this->import(file_get_contents($filename));
+        $this->import(file_get_contents($filename));
+
+        return $this;
     }
-    
-    
-    
-    
-    
-    
+
     /**
      * Load tracker data from encoded string
      *
-     * @see export()
      * @param string $str
-     * @throws Mage_Exception
+     *
      * @return Mzax_Emarketing_Model_Conversion_Tracker
+     * @throws Mage_Exception
      */
     public function import($str)
     {
@@ -298,15 +314,14 @@ class Mzax_Emarketing_Model_Conversion_Tracker
             $this->_goal = null;
             // check and make sure goal and filters exist
             $this->getGoal(true);
-        }
-        catch(Zend_Json_Exception $e) {
+        } catch (Zend_Json_Exception $e) {
             throw new Mage_Exception("Failed to decode template file");
         }
         return $this;
     }
-    
-    
-    
+
+
+
     /**
      * Convert to tracker to encoded string
      *
@@ -314,17 +329,19 @@ class Mzax_Emarketing_Model_Conversion_Tracker
      */
     public function export()
     {
-        // set current extension version
-        $this->setVersion(Mage::helper('mzax_emarketing')->getVersion());
-    
+        /** @var Mzax_Emarketing_Helper_Data $helper */
+        $helper = Mage::helper('mzax_emarketing');
+        $this->setData('version', $helper->getVersion());
+
         $json = $this->toJson(array('version', 'title', 'description', 'goal_type', 'filter_data'));
         return base64_encode($json);
     }
-    
-    
-    
-    
-    
+
+    /**
+     * Clone Object
+     *
+     * @return $this
+     */
     public function __clone()
     {
         $this->setId(null);
@@ -332,10 +349,10 @@ class Mzax_Emarketing_Model_Conversion_Tracker
         $this->setIsAggregated(true);
         $this->setCreatedAt(null);
         $this->setUpdatedAt(null);
-        
+
         return $this;
     }
-    
-    
-    
+
+
+
 }

@@ -35,7 +35,7 @@ class UAParser_Exception_FileNotFoundException extends Exception
     {
         return new static(
             sprintf(
-                'Please download the "%s" file before using ua-parser by running "php bin/uaparser.php ua-parser:update"',
+                'Please download the "%s" file before using ua-parser by running "php bin/uaparser ua-parser:update"',
                 $file
             )
         );

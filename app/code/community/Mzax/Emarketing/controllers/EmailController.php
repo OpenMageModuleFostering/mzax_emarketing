@@ -1,15 +1,14 @@
 <?php
 /**
  * Mzax Emarketing (www.mzax.de)
- * 
+ *
  * NOTICE OF LICENSE
- * 
+ *
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is bundled with this Extension in the file LICENSE.
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
- * 
- * @version     0.4.9
+ *
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -18,43 +17,56 @@
  */
 
 
-
-
+/**
+ * Class Mzax_Emarketing_EmailController
+ */
 class Mzax_Emarketing_EmailController extends Mage_Core_Controller_Front_Action
 {
-    
-    
-    public function indexAction()
-    {
-        $recipientId = $this->getSession()->getLastRecipientId();
-        
-        if(!$recipientId) {
-            return $this->_redirectUrl('/');
-        }
-        
-        $email = Mage::getSingleton('mzax_emarketing/outbox')->getEmailByRecipient($recipientId);
-        if(!$email->getId() || $email->isPurged()) {
-            return $this->_redirectUrl('/');
-        }
-        
-        $this->getResponse()->setBody($email->getBodyHtml());
-        
-        
-    }
-    
-    
-    
-
+    /**
+     * @var Mzax_Emarketing_Model_SessionManager
+     */
+    protected $_sessionManager;
 
     /**
-     * Retrieve session model
-     *
-     * @return Mzax_Emarketing_Model_Session
+     * @var Mzax_Emarketing_Model_Outbox
      */
-    public function getSession()
+    protected $_outbox;
+
+    /**
+     * Controller Constructor.
+     * Load dependencies.
+     *
+     * @return void
+     */
+    public function _construct()
     {
-        return Mage::getSingleton('mzax_emarketing/session');
+        parent::_construct();
+
+        $this->_sessionManager = Mage::getSingleton('mzax_emarketing/sessionManager');
+        $this->_outbox = Mage::getSingleton('mzax_emarketing/outbox');
     }
-    
-    
+
+    /**
+     * View email in browser action
+     *
+     * @return void
+     */
+    public function indexAction()
+    {
+        $session = $this->_sessionManager->getSession();
+
+        $recipientId = $session->getLastRecipientId();
+        if (!$recipientId) {
+            $this->_redirectUrl('/');
+            return;
+        }
+
+        $email = $this->_outbox->getEmailByRecipient($recipientId);
+        if (!$email->getId() || $email->isPurged()) {
+            $this->_redirectUrl('/');
+            return;
+        }
+
+        $this->getResponse()->setBody($email->getBodyHtml());
+    }
 }

@@ -1,15 +1,14 @@
 <?php
 /**
  * Mzax Emarketing (www.mzax.de)
- * 
+ *
  * NOTICE OF LICENSE
- * 
+ *
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is bundled with this Extension in the file LICENSE.
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
- * 
- * @version     0.4.9
+ *
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -19,14 +18,13 @@
 
 
 /**
- * 
- * 
- * @author Jacob Siefer
- *
+ * Class Mzax_Emarketing_Model_Object_Address
  */
 abstract class Mzax_Emarketing_Model_Object_Address extends Mzax_Emarketing_Model_Object_Abstract
 {
-    
+    /**
+     * @return Mzax_Emarketing_Db_Select
+     */
     public function getQuery()
     {
         $query = parent::getQuery();
@@ -40,41 +38,48 @@ abstract class Mzax_Emarketing_Model_Object_Address extends Mzax_Emarketing_Mode
         $query->addBinding('firstname', 'firstname');
         $query->addBinding('lastname', 'lastname');
         $query->addBinding('email', 'email');
-    
+
         return $query;
     }
-    
-    
-    
+
+    /**
+     * @param string $id
+     *
+     * @return null
+     */
     public function getAdminUrl($id)
     {
         return null;
     }
-    
-    
 
+    /**
+     * @param Mzax_Emarketing_Model_Object_Collection $collection
+     *
+     * @return void
+     */
     public function prepareCollection(Mzax_Emarketing_Model_Object_Collection $collection)
     {
         parent::prepareCollection($collection);
-    
+
         $adapter = $this->getResourceHelper()->getAdapter();
-    
+
         $nameExpr[] = "LTRIM(RTRIM({firstname}))";
         $nameExpr[] = "LTRIM(RTRIM({lastname}))";
         $nameExpr = $adapter->getConcatSql($nameExpr, ' ');
-    
+
         $collection->addField('name', $nameExpr);
         $collection->addField('email', 'email');
         $collection->addField('city', 'city');
         $collection->addField('postcode', 'postcode');
     }
-    
-    
-    
-    
+
+    /**
+     * @param Mzax_Emarketing_Block_Filter_Object_Grid $grid
+     *
+     * @return void
+     */
     public function prepareGridColumns(Mzax_Emarketing_Block_Filter_Object_Grid $grid)
     {
-    
         $grid->addColumn('name', array(
             'header'    => Mage::helper('mzax_emarketing')->__('Name'),
             'index'     => 'name'
@@ -92,7 +97,4 @@ abstract class Mzax_Emarketing_Model_Object_Address extends Mzax_Emarketing_Mode
             'index'     => 'postcode',
         ));
     }
-    
-    
-    
 }

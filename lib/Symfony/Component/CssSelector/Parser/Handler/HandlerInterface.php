@@ -25,6 +25,8 @@
  * which is copyright Ian Bicking, @see https://github.com/SimonSapin/cssselect.
  *
  * @author Jean-François Simon <jeanfrancois.simon@sensiolabs.com>
+ *
+ * @internal
  */
 interface Symfony_Component_CssSelector_Parser_Handler_HandlerInterface
 {

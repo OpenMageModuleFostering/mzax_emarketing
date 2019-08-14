@@ -26,6 +26,8 @@
  * which is copyright Ian Bicking, @see https://github.com/SimonSapin/cssselect.
  *
  * @author Jean-François Simon <jeanfrancois.simon@sensiolabs.com>
+ *
+ * @internal
  */
 class Symfony_Component_CssSelector_Parser_Parser implements Symfony_Component_CssSelector_Parser_ParserInterface
 {
@@ -60,9 +62,9 @@ class Symfony_Component_CssSelector_Parser_Parser implements Symfony_Component_C
      *
      * @param Symfony_Component_CssSelector_Parser_Token[] $tokens
      *
-     * @throws Symfony_Component_CssSelector_Exception_SyntaxErrorException
-     *
      * @return array
+     *
+     * @throws Symfony_Component_CssSelector_Exception_SyntaxErrorException
      */
     public static function parseSeries(array $tokens)
     {
@@ -135,9 +137,9 @@ class Symfony_Component_CssSelector_Parser_Parser implements Symfony_Component_C
      *
      * @param Symfony_Component_CssSelector_Parser_TokenStream $stream
      *
-     * @throws Symfony_Component_CssSelector_Exception_SyntaxErrorException
-     *
      * @return Symfony_Component_CssSelector_Node_SelectorNode
+     *
+     * @throws Symfony_Component_CssSelector_Exception_SyntaxErrorException
      */
     private function parserSelectorNode(Symfony_Component_CssSelector_Parser_TokenStream $stream)
     {
@@ -175,9 +177,9 @@ class Symfony_Component_CssSelector_Parser_Parser implements Symfony_Component_C
      * @param Symfony_Component_CssSelector_Parser_TokenStream $stream
      * @param bool        $insideNegation
      *
-     * @throws Symfony_Component_CssSelector_Exception_SyntaxErrorException
-     *
      * @return array
+     *
+     * @throws Symfony_Component_CssSelector_Exception_SyntaxErrorException
      */
     private function parseSimpleSelector(Symfony_Component_CssSelector_Parser_TokenStream $stream, $insideNegation = false)
     {
@@ -332,9 +334,9 @@ class Symfony_Component_CssSelector_Parser_Parser implements Symfony_Component_C
      * @param Symfony_Component_CssSelector_Node_NodeInterface $selector
      * @param Symfony_Component_CssSelector_Parser_TokenStream        $stream
      *
-     * @throws Symfony_Component_CssSelector_Exception_SyntaxErrorException
-     *
      * @return Symfony_Component_CssSelector_Node_AttributeNode
+     *
+     * @throws Symfony_Component_CssSelector_Exception_SyntaxErrorException
      */
     private function parseAttributeNode(Symfony_Component_CssSelector_Node_NodeInterface $selector, Symfony_Component_CssSelector_Parser_TokenStream $stream)
     {

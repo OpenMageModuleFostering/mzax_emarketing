@@ -9,7 +9,6 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.9
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -550,7 +549,7 @@ $reportTable = $connection->newTable($installer->getTable('mzax_emarketing/repor
     ->setOption('type', 'MYISAM');
 
 // Default fields to track
-foreach($metrics as $metric) {
+foreach ($metrics as $metric) {
     $reportTable->addColumn("{$metric}s",     Varien_Db_Ddl_Table::TYPE_INTEGER, 10,    $int, "number of {$metric}s");
     $reportTable->addColumn("{$metric}_rate", Varien_Db_Ddl_Table::TYPE_DECIMAL, '6,3', $int, "{$metric} rate");
 }
@@ -606,7 +605,7 @@ $reportDimensionTable = $connection->newTable($installer->getTable('mzax_emarket
     ->setOption('type', 'MYISAM');
 
 // Default metrics to track
-foreach($metrics as $metric) {
+foreach ($metrics as $metric) {
     $reportDimensionTable->addColumn("{$metric}s", Varien_Db_Ddl_Table::TYPE_SMALLINT, null, $int, "number of {$metric}s");
 }
 
@@ -665,7 +664,7 @@ $helper = Mage::helper('mzax_emarketing');
  * 
  */
 $sampleTemplate = dirname(__FILE__) . DS . 'sample.mzax.template';
-if(file_exists($sampleTemplate)) {
+if (file_exists($sampleTemplate)) {
     /* @var $template Mzax_Emarketing_Model_Template */
     $template = Mage::getModel('mzax_emarketing/template');
     $template->loadFromFile($sampleTemplate);
@@ -681,7 +680,7 @@ if(file_exists($sampleTemplate)) {
 
 /* @var $tracker Mzax_Emarketing_Model_Conversion_Tracker */
 $trackerFile = dirname(__FILE__) . DS . 'indirect-orders.mzax.tracker';
-if(file_exists($trackerFile)) {
+if (file_exists($trackerFile)) {
     $tracker = Mage::getModel('mzax_emarketing/conversion_tracker');
     $tracker->loadFromFile($trackerFile);
     $tracker->setIsActive(true);
@@ -691,7 +690,7 @@ if(file_exists($trackerFile)) {
 }
 
 $trackerFile = dirname(__FILE__) . DS . 'direct-orders.mzax.tracker';
-if(file_exists($trackerFile)) {
+if (file_exists($trackerFile)) {
     $tracker = Mage::getModel('mzax_emarketing/conversion_tracker');
     $tracker->loadFromFile($trackerFile);
     $tracker->setIsActive(true);
@@ -705,13 +704,13 @@ if(file_exists($trackerFile)) {
 
 
 $store = Mage::app()->getDefaultStoreView();
-if(!$store) {
+if (!$store) {
     $store = Mage::app()->getStore(Mage_Core_Model_App::DISTRO_STORE_ID);
 }
-if(!$store) {
+if (!$store) {
     $store = Mage::app()->getStore(Mage_Core_Model_App::DISTRO_STORE_CODE);
 }
-if(!$store) {
+if (!$store) {
     $store = Mage::app()->getStore();
 }
 

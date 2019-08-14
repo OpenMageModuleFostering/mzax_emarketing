@@ -1,15 +1,14 @@
-<?php 
+<?php
 /**
  * Mzax Emarketing (www.mzax.de)
- * 
+ *
  * NOTICE OF LICENSE
- * 
+ *
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is bundled with this Extension in the file LICENSE.
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
- * 
- * @version     0.4.9
+ *
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -24,7 +23,7 @@
 <?php echo $this->getBlockHtml('mzax_ace_editor') ?>
 
 <div id="mzax-preview-email">
-    
+
     <div id="preview-head">
         <label class="subject"><?php echo $this->htmlEscape($this->getSubject()) ?></label>
 
@@ -34,9 +33,9 @@
             <li class="tab" id="tab_code">Code</li>
             <li class="tab" id="tab_links">Links</li>
         </ul>
-        
+
     </div>
-    
+
     <?php if($error = $this->getError()): ?>
         <div>
             <p><button onclick="reload();">reload</button> <?php echo $error->getMessage() ?></p>
@@ -59,7 +58,7 @@
                 <div id="link-grid" class="grid np">
                     <form action="<?php echo $this->getUrl('*/*/updateLinks', array('_current' => 1)) ?>" method="post">
                         <input type="hidden" name="form_key" value="<?php echo $this->getFormKey() ?>" />
-                        
+
                         <table id="mzax-content-link-table" class="data order-tables" cellspacing="0">
                             <thead>
                                 <tr class="headings">
@@ -91,7 +90,7 @@
                                 </th>
                             </tfoot>
                         </table>
-                        
+
                     </form>
                 </div>
             </div>

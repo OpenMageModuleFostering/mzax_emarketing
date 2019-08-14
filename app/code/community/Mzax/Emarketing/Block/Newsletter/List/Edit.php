@@ -1,15 +1,14 @@
 <?php
 /**
  * Mzax Emarketing (www.mzax.de)
- * 
+ *
  * NOTICE OF LICENSE
- * 
+ *
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is bundled with this Extension in the file LICENSE.
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
- * 
- * @version     0.4.9
+ *
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -18,12 +17,18 @@
  */
 
 
+/**
+ * Class Mzax_Emarketing_Block_Newsletter_List_Edit
+ */
 class Mzax_Emarketing_Block_Newsletter_List_Edit extends Mage_Adminhtml_Block_Widget_Form_Container
 {
+    /**
+     * Mzax_Emarketing_Block_Newsletter_List_Edit constructor.
+     */
     public function __construct()
     {
         $this->_objectId = 'id';
-        
+
         $this->_blockGroup = 'mzax_emarketing';
         $this->_controller = 'newsletter_list';
 
@@ -33,37 +38,43 @@ class Mzax_Emarketing_Block_Newsletter_List_Edit extends Mage_Adminhtml_Block_Wi
         $this->_updateButton('delete', 'label', $this->__('Delete List'));
     }
 
-
-    
-
+    /**
+     * @return string
+     */
     public function getHeaderText()
     {
         $list = Mage::registry('current_list');
         if ($list->getId()) {
             return $this->escapeHtml($list->getName());
-        }
-        else {
+        } else {
             return $this->__('New Template');
         }
     }
 
+    /**
+     * @return string
+     */
     public function getValidationUrl()
     {
         return $this->getUrl('*/*/validate', array('_current'=>true));
     }
-    
+
+    /**
+     * @return $this
+     */
     protected function _prepareLayout()
     {
-    	$this->_addButton('save_and_continue', array(
+        $this->_addButton('save_and_continue', array(
             'label'     => $this->__('Save And Continue Edit'),
             'onclick'   => 'editForm.submit(\''.$this->_getSaveAndContinueUrl().'\')',
             'class' => 'save'
         ), 10);
 
-    	return parent::_prepareLayout();
+        parent::_prepareLayout();
+
+        return $this;
     }
-    
-    
+
     /**
      * Get form action URL
      *
@@ -74,13 +85,16 @@ class Mzax_Emarketing_Block_Newsletter_List_Edit extends Mage_Adminhtml_Block_Wi
         if ($this->hasFormActionUrl()) {
             return $this->getData('form_action_url');
         }
+
         return $this->getUrl('*/*/save');
     }
-    
-    
+
+    /**
+     * @return string
+     */
     protected function _getSaveAndContinueUrl()
     {
-    	return $this->getUrl('*/*/save', array(
+        return $this->getUrl('*/*/save', array(
             '_current'  => true,
             'back'      => 'edit'
         ));

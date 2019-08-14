@@ -1,15 +1,14 @@
 <?php
 /**
  * Mzax Emarketing (www.mzax.de)
- * 
+ *
  * NOTICE OF LICENSE
- * 
+ *
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is bundled with this Extension in the file LICENSE.
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
- * 
- * @version     0.4.9
+ *
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -18,12 +17,18 @@
  */
 
 
+/**
+ * Class Mzax_Emarketing_Block_Newsletter_List_Edit_Tab_Subscribers
+ */
 class Mzax_Emarketing_Block_Newsletter_List_Edit_Tab_Subscribers extends Mage_Adminhtml_Block_Widget_Grid
 {
-
+    /**
+     * Mzax_Emarketing_Block_Newsletter_List_Edit_Tab_Subscribers constructor.
+     */
     public function __construct()
     {
         parent::__construct();
+
         $this->setId('list_subscriber_grid');
         $this->setUseAjax(true);
         $this->setSaveParametersInSession(true);
@@ -33,8 +38,9 @@ class Mzax_Emarketing_Block_Newsletter_List_Edit_Tab_Subscribers extends Mage_Ad
 
     }
 
-
-    
+    /**
+     * @return Mage_Adminhtml_Block_Widget_Grid
+     */
     protected function _prepareCollection()
     {
         /* @var $collection Mzax_Emarketing_Model_Resource_Newsletter_List_Subscriber_Collection */
@@ -47,9 +53,9 @@ class Mzax_Emarketing_Block_Newsletter_List_Edit_Tab_Subscribers extends Mage_Ad
         return parent::_prepareCollection();
     }
 
-
-
-
+    /**
+     * @return $this
+     */
     protected function _prepareColumns()
     {
         $this->addColumn('subscriber_id', array(
@@ -106,13 +112,14 @@ class Mzax_Emarketing_Block_Newsletter_List_Edit_Tab_Subscribers extends Mage_Ad
             'type'      =>'datetime'
         ));
 
+        parent::_prepareColumns();
 
-        return parent::_prepareColumns();
+        return $this;
     }
 
-
-
-
+    /**
+     * @return $this
+     */
     protected function _prepareMassaction()
     {
         $this->setMassactionIdField('subscriber_id');
@@ -132,27 +139,30 @@ class Mzax_Emarketing_Block_Newsletter_List_Edit_Tab_Subscribers extends Mage_Ad
         return $this;
     }
 
-
-
+    /**
+     * @return string
+     */
     public function getAdditionalJavaScript()
     {
         $object = $this->getMassactionBlock()->getJsObjectName();
         return "window.{$object} = {$object};";
     }
 
-
-
-
-
-
+    /**
+     * @return string
+     */
     public function getGridUrl()
     {
         return $this->getUrl('*/*/subscribers', array('_current' => true));
     }
 
+    /**
+     * @param $row
+     *
+     * @return null
+     */
     public function getRowUrl($row)
     {
         return null;
     }
-    
 }

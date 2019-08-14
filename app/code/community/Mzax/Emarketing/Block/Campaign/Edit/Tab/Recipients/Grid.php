@@ -1,15 +1,14 @@
 <?php
 /**
  * Mzax Emarketing (www.mzax.de)
- * 
+ *
  * NOTICE OF LICENSE
- * 
+ *
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is bundled with this Extension in the file LICENSE.
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
- * 
- * @version     0.4.9
+ *
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -18,91 +17,85 @@
  */
 
 
+/**
+ * Class Mzax_Emarketing_Block_Campaign_Edit_Tab_Recipients_Grid
+ */
 class Mzax_Emarketing_Block_Campaign_Edit_Tab_Recipients_Grid extends Mzax_Emarketing_Block_Filter_Object_Grid
 {
-
     /**
      * @var Mzax_Emarketing_Model_Campaign
      */
     protected $_campaign;
 
-    
-    
+    /**
+     * Mzax_Emarketing_Block_Campaign_Edit_Tab_Recipients_Grid constructor.
+     */
     public function __construct()
     {
         parent::__construct();
         $this->setId('recipients_grid');
         $this->setUseAjax(true);
-        
+
         $this->addExportType('*/*/exportRecipients', 'CSV');
     }
-    
-
 
     /**
      * @return Mzax_Emarketing_Model_Campaign
      */
     public function getCampaign()
     {
-        if(!$this->_campaign) {
+        if (!$this->_campaign) {
             $this->_campaign = Mage::registry('current_campaign');
         }
+
         return $this->_campaign;
     }
-    
-    
-    
-    
+
+    /**
+     * @return Mzax_Emarketing_Model_Recipient_Provider_Abstract
+     */
     public function getFilter()
     {
         $filter = $this->getCampaign()->getRecipientProvider();
         $this->prepareEmulation($filter);
-        
+
         return $filter;
     }
-    
-    
-    
+
+    /**
+     * @param Mzax_Emarketing_Model_Object_Filter_Abstract $filter
+     */
     public function prepareEmulation(Mzax_Emarketing_Model_Object_Filter_Abstract $filter)
     {
         $parent = $this->getParentBlock();
-        if($parent && method_exists($parent, 'prepareEmulation')) {
+
+        if ($parent && method_exists($parent, 'prepareEmulation')) {
             $parent->prepareEmulation($filter);
         }
     }
-    
-    
-    
+
     /**
      * Prepare grid columns
-     * 
+     *
      * This is done by the email provider. The grid
      * does not know what type of objects it is loading
-     * 
+     *
      */
     protected function _prepareColumns()
-    { 
+    {
         parent::_prepareColumns();
-        
+
         $this->removeColumn('matches');
         $this->getCampaign()->getMedium()->prepareRecipientGrid($this);
-        
+
         return $this;
     }
-    
-    
-    
+
+    /**
+     * @return string
+     */
     public function getGridUrl()
     {
-        return $this->getUrl('*/*/*', array('_current' => true));
+        return $this->getUrl('*/*/recipientsGrid', array('_current' => true));
     }
-
-
-    public function getAdditionalJavaScript()
-    {
-        $object = $this->getMassactionBlock()->getJsObjectName();
-        return "window.{$object} = {$object};";
-    }
-
-    
 }

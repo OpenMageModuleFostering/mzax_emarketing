@@ -1,15 +1,14 @@
 <?php
 /**
  * Mzax Emarketing (www.mzax.de)
- * 
+ *
  * NOTICE OF LICENSE
- * 
+ *
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is bundled with this Extension in the file LICENSE.
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
- * 
- * @version     0.4.9
+ *
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -19,20 +18,12 @@
 
 
 /**
- * Works like multislect but one can also select all options 
+ * Works like multislect but one can also select all options
  * like a wildcard
- * 
- *
- * @author Jacob Siefer
- * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.4.9
  */
 class Mzax_Emarketing_Model_Form_Element_Wildselect
     extends Varien_Data_Form_Element_Multiselect
 {
-    
-    
-    
     /**
      * Retrieve Element HTML fragment
      *
@@ -49,13 +40,13 @@ class Mzax_Emarketing_Model_Form_Element_Wildselect
         $htmlId = 'wildcard_' . $this->getHtmlId();
         $html .= '<input id="'.$htmlId.'" name="wildcard[]" value="' . $this->getId() . '"';
         $html .= ($disabled ? ' checked="checked"' : '');
-        
+
         if ($this->getReadonly()) {
             $html .= ' disabled="disabled"';
         }
-        
+
         $wildcardLabel = $this->getDataSetDefault('wildcard_label', Mage::helper('mzax_emarketing')->__('Use All'));
-        
+
         $html .= ' onclick="toggleValueElements(this, this.parentNode);" class="checkbox" type="checkbox" />';
 
         $html .= ' <label for="'.$htmlId.'" class="normal">' . $wildcardLabel . '</label>';

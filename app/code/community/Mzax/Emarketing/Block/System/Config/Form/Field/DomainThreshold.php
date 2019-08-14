@@ -1,15 +1,14 @@
 <?php
 /**
  * Mzax Emarketing (www.mzax.de)
- * 
+ *
  * NOTICE OF LICENSE
- * 
+ *
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is bundled with this Extension in the file LICENSE.
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
- * 
- * @version     0.4.9
+ *
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -19,13 +18,14 @@
 
 
 /**
- * 
- * @author Jacob Siefer
- *
+ * Class Mzax_Emarketing_Block_System_Config_Form_Field_DomainThreshold
  */
 class Mzax_Emarketing_Block_System_Config_Form_Field_DomainThreshold
     extends Mage_Adminhtml_Block_System_Config_Form_Field_Array_Abstract
 {
+    /**
+     * Mzax_Emarketing_Block_System_Config_Form_Field_DomainThreshold constructor.
+     */
     public function __construct()
     {
         $this->addColumn('domain', array(
@@ -48,9 +48,10 @@ class Mzax_Emarketing_Block_System_Config_Form_Field_DomainThreshold
             'style' => 'width:30px',
             'class' => 'required-entry validate-zero-or-greater'
         ));
-        
+
         $this->_addAfter = false;
         $this->_addButtonLabel = Mage::helper('adminhtml')->__('Add Domain');
+
         parent::__construct();
     }
 }

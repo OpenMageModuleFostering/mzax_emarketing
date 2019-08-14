@@ -1,15 +1,14 @@
 <?php
 /**
  * Mzax Emarketing (www.mzax.de)
- * 
+ *
  * NOTICE OF LICENSE
- * 
+ *
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is bundled with this Extension in the file LICENSE.
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
- * 
- * @version     0.4.9
+ *
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -18,12 +17,18 @@
  */
 
 
+/**
+ * Class Mzax_Emarketing_Block_Inbox_Email
+ */
 class Mzax_Emarketing_Block_Inbox_Email extends Mage_Adminhtml_Block_Widget_Form_Container
 {
+    /**
+     * Mzax_Emarketing_Block_Inbox_Email constructor.
+     */
     public function __construct()
     {
         $this->_objectId = 'id';
-        
+
         $this->_blockGroup = 'mzax_emarketing';
         $this->_controller = 'inbox';
         $this->_mode       = 'email';
@@ -34,48 +39,56 @@ class Mzax_Emarketing_Block_Inbox_Email extends Mage_Adminhtml_Block_Widget_Form
         $this->_updateButton('delete', 'label', $this->__('Delete'));
 
     }
-    
-    
+
+    /**
+     * @return string
+     */
     public function getHeaderText()
     {
         $message = Mage::registry('current_email');
         if ($message->getId()) {
-            return $this->htmlEscape($message->getSubject());
-        }
-        else {
+            return $this->escapeHtml($message->getSubject());
+        } else {
             return $this->__('New Email');
         }
     }
 
-    
-    
+    /**
+     * @return string
+     */
     public function getValidationUrl()
     {
         return $this->getUrl('*/*/validate', array('_current'=>true));
     }
-    
-    
-    
+
+    /**
+     * Prepare layout
+     *
+     * @return $this
+     */
     protected function _prepareLayout()
     {
-     //   return false;
-    	$this->_addButton('save_and_continue', array(
+        $this->_addButton('save_and_continue', array(
             'label'     => $this->__('Save And Continue Edit'),
             'onclick'   => 'editForm.submit(\''.$this->_getSaveAndContinueUrl().'\')',
             'class'     => 'save'
         ), 10);
-    	
-    	
-    	$this->_addButton('parse', array(
-	        'label'     => $this->__('Parse'),
-	        'onclick'   => "setLocation('{$this->getUrl('*/*/parse', array('_current'  => true))}')"
-    	), 10);
-    	
 
-    	return parent::_prepareLayout();
+
+        $this->_addButton(
+            'parse',
+            array(
+                'label'     => $this->__('Parse'),
+                'onclick'   => "setLocation('{$this->getUrl('*/*/parse', array('_current'  => true))}')"
+            ),
+            10
+        );
+
+        parent::_prepareLayout();
+
+        return $this;
     }
-    
-    
+
     /**
      * Get form action URL
      *
@@ -88,13 +101,18 @@ class Mzax_Emarketing_Block_Inbox_Email extends Mage_Adminhtml_Block_Widget_Form
         }
         return $this->getUrl('*/*/save');
     }
-    
-    
+
+    /**
+     * @return string
+     */
     protected function _getSaveAndContinueUrl()
     {
-    	return $this->getUrl('*/*/save', array(
-            '_current'  => true,
-            'back'      => 'edit'
-        ));
+        return $this->getUrl(
+            '*/*/save',
+            array(
+                '_current'  => true,
+                'back'      => 'edit'
+            )
+        );
     }
 }

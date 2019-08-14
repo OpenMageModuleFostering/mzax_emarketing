@@ -1,15 +1,14 @@
 <?php
 /**
  * Mzax Emarketing (www.mzax.de)
- * 
+ *
  * NOTICE OF LICENSE
- * 
+ *
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is bundled with this Extension in the file LICENSE.
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
- * 
- * @version     0.4.9
+ *
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -21,83 +20,98 @@
 
 /**
  * Simple newsletter status filter
- * 
- * @method Mzax_Emarketing_Model_Object_Filter_Newsletter setCondition(string $value)
- * @method Mzax_Emarketing_Model_Object_Filter_Newsletter setStatus(string $value)
  *
- * @author Jacob Siefer
- * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.4.9
+ * @method string getCondition()
+ * @method $this setCondition(string $value)
+ *
+ * @method string getStatus()
+ * @method $this setStatus(string $value)
+ *
+ *
+ * @method int getStore()
+ * @method $this setStore(int $value)
  */
 class Mzax_Emarketing_Model_Object_Filter_Newsletter
     extends Mzax_Emarketing_Model_Object_Filter_Abstract
 {
-    
-    const DEFAULT_STATUS    = Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED;
+    const DEFAULT_STATUS = Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED;
     const DEFAULT_CONDITION = 'is';
-    
 
-    
-    
+    /**
+     * @return string
+     */
     public function getTitle()
     {
         return "Newsletter | Subscription Status";
     }
-    
-    
-    
+
+    /**
+     * @param Mzax_Emarketing_Model_Object_Filter_Component $parent
+     *
+     * @return bool
+     */
     public function acceptParent(Mzax_Emarketing_Model_Object_Filter_Component $parent)
     {
         return $parent->hasBinding('email', 'customer_id', 'subscriber_id', 'subscriber_status');
     }
-    
-    
-    
-    
-    protected function _prepareQuery(Mzax_Emarketing_Db_Select $query)
-    {        
-        $condition = $this->getDataSetDefault('condition', self::DEFAULT_CONDITION);
-        $status    = $this->getDataSetDefault('status',    self::DEFAULT_STATUS);
-        
-        if(!$query->hasBinding('subscriber_status'))
-        {
-            if($query->hasBinding('subscriber_id')) {
-                $query->joinTableLeft('subscriber_id', 'newsletter/subscriber', 'subscriber');
-            }
-            else if($query->hasBinding('email')) {
-                $query->joinTableLeft(array('subscriber_email' => 'email'), 'newsletter/subscriber', 'subscriber');
-            }
 
-            else if($query->hasBinding('customer_id')) {
+    /**
+     * @param Mzax_Emarketing_Db_Select $query
+     *
+     * @return void
+     */
+    protected function _prepareQuery(Mzax_Emarketing_Db_Select $query)
+    {
+        $condition = $this->getDataSetDefault('condition', self::DEFAULT_CONDITION);
+        $status = $this->getDataSetDefault('status', self::DEFAULT_STATUS);
+
+        if (!$query->hasBinding('subscriber_status')) {
+            if ($query->hasBinding('subscriber_id')) {
+                $query->joinTableLeft('subscriber_id', 'newsletter/subscriber', 'subscriber');
+            } elseif ($query->hasBinding('email')) {
+                $query->joinTableLeft(array('subscriber_email' => 'email'), 'newsletter/subscriber', 'subscriber');
+            } elseif ($query->hasBinding('customer_id')) {
                 $query->joinTableLeft('customer_id', 'newsletter/subscriber', 'subscriber');
             }
             $query->addBinding('subscriber_status', 'subscriber.subscriber_status');
+            $query->addBinding('subscriber_store', 'subscriber.store_id');
+            $query->group();
         }
 
-        if($condition === 'is') {
+        if ($condition === 'is') {
             $query->where("{subscriber_status} = ?", $status);
-        }
-        else {
+        } else {
             $query->where("{subscriber_status} != ? OR {subscriber_status} IS NULL", $status);
         }
+
+        if ($this->_config->flag('mzax_emarketing/general/newsletter_multistore')) {
+            $storeId = (int)$this->getStore();
+            if ($storeId && $query->hasBinding('subscriber_store')) {
+                $query->where("{subscriber_store} = ?", $storeId);
+            }
+        }
     }
-    
-    
-    
-    
+
+    /**
+     * @param Mzax_Emarketing_Model_Object_Collection $collection
+     *
+     * @return void
+     */
     protected function _prepareCollection(Mzax_Emarketing_Model_Object_Collection $collection)
     {
         parent::_prepareCollection($collection);
         $collection->addField('newsletter_status', 'subscriber_status');
     }
-    
-    
-    
-    
+
+    /**
+     * @param Mzax_Emarketing_Block_Filter_Object_Grid $grid
+     *
+     * @return void
+     */
     public function prepareGridColumns(Mzax_Emarketing_Block_Filter_Object_Grid $grid)
     {
         parent::prepareGridColumns($grid);
-    
+
         $grid->addColumn('newsletter_status', array(
             'header'    => $this->__('Newsletter'),
             'width'     => '80px',
@@ -106,15 +120,7 @@ class Mzax_Emarketing_Model_Object_Filter_Newsletter
             'type'      => 'options',
             'options'   => array_map('ucwords', $this->getStatusOptions())
         ));
-    
     }
-    
-
-    
-    
-    
-    
-    
 
     /**
      * html for settings in option form
@@ -122,20 +128,44 @@ class Mzax_Emarketing_Model_Object_Filter_Newsletter
      * @return string
      */
     protected function prepareForm()
-    {    
-        $conditionElment = $this->getSelectElement('condition', self::DEFAULT_CONDITION);
-        $subscribeElment = $this->getSelectElement('status', self::DEFAULT_STATUS);
-        
-        return $this->__('Newsletter subscription status %s %s.',
-            $conditionElment->toHtml(),
-            $subscribeElment->toHtml()
-         );
+    {
+        $conditionElement = $this->getSelectElement('condition', self::DEFAULT_CONDITION);
+        $subscribeElement = $this->getSelectElement('status', self::DEFAULT_STATUS);
+        $storeElement = $this->getSelectElement('store', '0');
+
+        return $this->__(
+            'Newsletter subscription status for %s %s %s.',
+            $storeElement->toHtml(),
+            $conditionElement->toHtml(),
+            $subscribeElement->toHtml()
+        );
     }
-    
-    
-    
-    
-    
+
+    /**
+     * Retrieve available stores
+     *
+     * @return string[]
+     */
+    protected function getStoreOptions()
+    {
+        $options = array(
+            '0' => $this->__('any store')
+        );
+
+        /** @var Mage_Adminhtml_Model_System_Config_Source_Store $source */
+        $source = Mage::getSingleton('adminhtml/system_config_source_store');
+        $stores = $source->toOptionArray();
+
+        foreach ($stores as $store) {
+            $options[$store['value']] = $store['label'];
+        }
+
+        return $options;
+    }
+
+    /**
+     * @return string[]
+     */
     protected function getStatusOptions()
     {
         return array(
@@ -145,9 +175,10 @@ class Mzax_Emarketing_Model_Object_Filter_Newsletter
             Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED   => $this->__('unconfirmed')
         );
     }
-    
-    
-    
+
+    /**
+     * @return string[]
+     */
     protected function getConditionOptions()
     {
         return array(
@@ -155,8 +186,52 @@ class Mzax_Emarketing_Model_Object_Filter_Newsletter
             'is_not'  => $this->__('is not')
         );
     }
-    
-    
-    
 
+    /**
+     * The newsletter table is missing an index for the email
+     *
+     * @param bool $create
+     *
+     * @return bool|string
+     * @throws Exception
+     */
+    public function checkIndexes($create = false)
+    {
+        $adapter = $this->_getWriteAdapter();
+        $table = $this->_getTable('newsletter/subscriber');
+        $indexList = $adapter->getIndexList($table);
+
+        // check if we already created an index
+        if (isset($indexList['MZAX_IDX_EMAIL'])) {
+            return true;
+        }
+
+        // check for other indexes that can work
+        foreach ($indexList as $index) {
+            switch (count($index['fields'])) {
+                case 1:
+                    if ($index['fields'][0] === 'subscriber_email') {
+                        return true;
+                    }
+                    break;
+            }
+        }
+
+        if ($create && $this->canCreateIndex()) {
+            try {
+                $adapter->addIndex($table, 'MZAX_IDX_EMAIL', array('subscriber_email'));
+                return true;
+            } catch (Exception $e) {
+                if (Mage::getIsDeveloperMode()) {
+                    throw $e;
+                }
+                Mage::logException($e);
+                return $this->__('Failed to create an index for the table "%s". Please check logs.', $table);
+            }
+        } elseif ($this->canCreateIndex()) {
+            return true;
+        }
+
+        return $this->__('It is recommended to set an index on "subscriber_email" for the table "%s" before using this filter.', $table);
+    }
 }

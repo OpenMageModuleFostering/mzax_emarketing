@@ -9,7 +9,6 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  *
- * @version     0.4.9
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -24,18 +23,15 @@
 class Mzax_Emarketing_Model_Resource_Newsletter_List
     extends Mage_Core_Model_Resource_Db_Abstract
 {
-
     /**
      * Initiate resources
      *
+     * @return void
      */
     public function _construct()
     {
         $this->_init('mzax_emarketing/newsletter_list', 'list_id');
     }
-
-
-
 
     /**
      * Prepare data for save
@@ -53,8 +49,6 @@ class Mzax_Emarketing_Model_Resource_Newsletter_List
         return $data;
     }
 
-
-
     /**
      * Add all current subscriber to list
      *
@@ -63,12 +57,12 @@ class Mzax_Emarketing_Model_Resource_Newsletter_List
      */
     public function addAllSubscribers($list)
     {
-        if( $list instanceof Varien_Object ) {
+        if ($list instanceof Varien_Object) {
             $list = $list->getId();
         }
         $list = (int) $list;
 
-        if($list) {
+        if ($list) {
             $adapter = $this->_getWriteAdapter();
 
             $select = $adapter->select()
@@ -83,11 +77,9 @@ class Mzax_Emarketing_Model_Resource_Newsletter_List
             $sql = $adapter->insertFromSelect($select, $this->getListSubscriberTable(), array(), $adapter::INSERT_ON_DUPLICATE);
             return $adapter->query($sql)->rowCount();
         }
+
         return 0;
     }
-
-
-
 
     /**
      * Add subscriber to list
@@ -97,12 +89,12 @@ class Mzax_Emarketing_Model_Resource_Newsletter_List
      */
     public function addSubscribers($list, array $subscribers)
     {
-        if( $list instanceof Varien_Object ) {
+        if ($list instanceof Varien_Object) {
             $list = $list->getId();
         }
-        $list = (int) $list;
 
-        if($list) {
+        $list = (int)$list;
+        if ($list) {
             $adapter = $this->_getWriteAdapter();
 
             $select = $adapter->select()
@@ -118,13 +110,9 @@ class Mzax_Emarketing_Model_Resource_Newsletter_List
             $sql = $adapter->insertFromSelect($select, $this->getListSubscriberTable(), array(), $adapter::INSERT_ON_DUPLICATE);
             return $adapter->query($sql)->rowCount();
         }
+
         return 0;
     }
-
-
-
-
-
 
     /**
      * Add all current subscriber to list
@@ -134,12 +122,12 @@ class Mzax_Emarketing_Model_Resource_Newsletter_List
      */
     public function removeAllSubscribers($list)
     {
-        if( $list instanceof Varien_Object ) {
+        if ($list instanceof Varien_Object) {
             $list = $list->getId();
         }
-        $list = (int) $list;
 
-        if($list) {
+        $list = (int)$list;
+        if ($list) {
             $adapter = $this->_getWriteAdapter();
 
             $select = $adapter->select()
@@ -156,10 +144,9 @@ class Mzax_Emarketing_Model_Resource_Newsletter_List
             $sql = $adapter->insertFromSelect($select, $this->getListSubscriberTable(), array(), $adapter::INSERT_ON_DUPLICATE);
             return $adapter->query($sql)->rowCount();
         }
+
         return 0;
     }
-
-
 
     /**
      * Subscribe all current subscriber to list
@@ -169,12 +156,12 @@ class Mzax_Emarketing_Model_Resource_Newsletter_List
      */
     public function removeSubscribers($list, array $subscribers)
     {
-        if( $list instanceof Varien_Object ) {
+        if ($list instanceof Varien_Object) {
             $list = $list->getId();
         }
-        $list = (int) $list;
 
-        if($list) {
+        $list = (int) $list;
+        if ($list) {
             $adapter = $this->_getWriteAdapter();
 
             $select = $adapter->select()
@@ -192,29 +179,25 @@ class Mzax_Emarketing_Model_Resource_Newsletter_List
             $sql = $adapter->insertFromSelect($select, $this->getListSubscriberTable(), array(), $adapter::INSERT_ON_DUPLICATE);
             return $adapter->query($sql)->rowCount();
         }
+
         return 0;
     }
-
-
-
-
-
 
     /**
      * Subscribe subscriber to all auto-subscriber lists
      *
      * @param $subscriber
+     *
      * @return $this
      */
     public function subscribeToAutoLists($subscriber)
     {
-        if($subscriber instanceof Varien_Object) {
+        if ($subscriber instanceof Varien_Object) {
             $subscriber = $subscriber->getId();
         }
 
-        $subscriber = (int) $subscriber;
-
-        if($subscriber) {
+        $subscriber = (int)$subscriber;
+        if ($subscriber) {
             $adapter = $this->_getReadAdapter();
 
             $select = $adapter->select()
@@ -234,10 +217,6 @@ class Mzax_Emarketing_Model_Resource_Newsletter_List
         return $this;
     }
 
-
-
-
-
     /**
      * Retrieve list subscriber table
      *
@@ -248,8 +227,6 @@ class Mzax_Emarketing_Model_Resource_Newsletter_List
         return $this->getTable('mzax_emarketing/newsletter_list_subscriber');
     }
 
-
-
     /**
      * Retrieve magentos newsletter subscriber table
      *
@@ -259,5 +236,4 @@ class Mzax_Emarketing_Model_Resource_Newsletter_List
     {
         return $this->getTable('newsletter/subscriber');
     }
-
 }

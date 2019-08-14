@@ -9,7 +9,6 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  *
- * @version     0.4.9
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -19,18 +18,14 @@
 
 
 
-
 /**
  * Class Mzax_Emarketing_Model_Resource_Newsletter_Subscriber
  *
- * Overwrite magento subscriber to add mutli-store support
- *
+ * Overwrite magento subscriber to add multi-store support
  */
 class Mzax_Emarketing_Model_Resource_Newsletter_Subscriber
     extends Mage_Newsletter_Model_Resource_Subscriber
 {
-
-
     /**
      * Check if fix is enabled
      *
@@ -38,21 +33,23 @@ class Mzax_Emarketing_Model_Resource_Newsletter_Subscriber
      */
     public function allowMultiStoreSupport()
     {
-        return Mage::getStoreConfigFlag('mzax_emarketing/general/newsletter_multistore');
-    }
+        /** @var Mzax_Emarketing_Model_Config $config */
+        $config = Mage::getSingleton('mzax_emarketing/config');
 
-    
+        return $config->flag('mzax_emarketing/general/newsletter_multistore');
+    }
 
     /**
      * Load subscriber from DB by email
      *
      * @param string $subscriberEmail
      * @param mixed $storeId
+     *
      * @return array
      */
     public function loadByEmail($subscriberEmail, $storeId = null)
     {
-        if(!$this->allowMultiStoreSupport() && is_null($storeId)) {
+        if (!$this->allowMultiStoreSupport() && is_null($storeId)) {
             return parent::loadByEmail($subscriberEmail);
         }
 
@@ -73,19 +70,18 @@ class Mzax_Emarketing_Model_Resource_Newsletter_Subscriber
         return $result;
     }
 
-
-
     /**
      * Load subscriber by customer
      *
      * @param Mage_Customer_Model_Customer $customer
      * @param mixed $storeId
+     *
      * @return array
      */
     public function loadByCustomer(Mage_Customer_Model_Customer $customer, $storeId = null)
     {
-        if(!$this->allowMultiStoreSupport() && is_null($storeId)) {
-            return parent::loadByEmail($subscriberEmail);
+        if (!$this->allowMultiStoreSupport() && is_null($storeId)) {
+            return parent::loadByCustomer($customer);
         }
 
         $select = $this->_read->select()
@@ -104,9 +100,8 @@ class Mzax_Emarketing_Model_Resource_Newsletter_Subscriber
             return $result;
         }
 
+        $result = $this->loadByEmail($customer->getEmail(), $storeId);
 
-        return $this->loadByEmail($customer->getEmail(), $storeId);
+        return $result;
     }
-
-
 }

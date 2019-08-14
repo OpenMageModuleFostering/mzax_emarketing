@@ -1,15 +1,14 @@
 <?php
 /**
  * Mzax Emarketing (www.mzax.de)
- * 
+ *
  * NOTICE OF LICENSE
- * 
+ *
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is bundled with this Extension in the file LICENSE.
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
- * 
- * @version     0.4.9
+ *
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -18,17 +17,26 @@
  */
 
 
+/**
+ * Class Mzax_Emarketing_Block_Newsletter_List_Edit_Tabs
+ */
 class Mzax_Emarketing_Block_Newsletter_List_Edit_Tabs extends Mage_Adminhtml_Block_Widget_Tabs
 {
-
+    /**
+     * Mzax_Emarketing_Block_Newsletter_List_Edit_Tabs constructor.
+     */
     public function __construct()
     {
         parent::__construct();
+
         $this->setId('mzax_emarketing_newsletter_list_tabs');
         $this->setDestElementId('edit_form');
         $this->setTitle($this->__('Newsletter List'));
     }
 
+    /**
+     * @return Mage_Core_Block_Abstract
+     */
     protected function _beforeToHtml()
     {
         /* @var $list  Mzax_Emarketing_Model_Newsletter_List */
@@ -41,7 +49,7 @@ class Mzax_Emarketing_Block_Newsletter_List_Edit_Tabs extends Mage_Adminhtml_Blo
             'active'    => true
         ));
 
-        if($list->getId()) {
+        if ($list->getId()) {
             $this->addTab('subscribers', array(
                 'label'   => $this->__('Subscribers'),
                 'content' => $this->getLayout()->createBlock('mzax_emarketing/newsletter_list_edit_tab_subscribers')->toHtml(),
@@ -53,17 +61,17 @@ class Mzax_Emarketing_Block_Newsletter_List_Edit_Tabs extends Mage_Adminhtml_Blo
         return parent::_beforeToHtml();
     }
 
-
-
-
+    /**
+     * @return void
+     */
     protected function _updateActiveTab()
     {
-    	$tabId = $this->getRequest()->getParam('tab');
-    	if( $tabId ) {
-    		$tabId = preg_replace("#{$this->getId()}_#", '', $tabId);
-    		if($tabId) {
-    			$this->setActiveTab($tabId);
-    		}
-    	}
+        $tabId = $this->getRequest()->getParam('tab');
+        if ($tabId) {
+            $tabId = preg_replace("#{$this->getId()}_#", '', $tabId);
+            if ($tabId) {
+                $this->setActiveTab($tabId);
+            }
+        }
     }
 }

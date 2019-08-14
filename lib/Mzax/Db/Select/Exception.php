@@ -9,7 +9,6 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  *
- * @version     0.4.9
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -18,55 +17,44 @@
  */
 
 
-
-
 /**
- * 
- * 
- *
- * @author Jacob Siefer
- * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.4.9
+ * Class Mzax_Db_Select_Exception
  */
 class Mzax_Db_Select_Exception extends Zend_Db_Exception
 {
-    
-    
     /**
-     * 
      * @var Mzax_Db_Select
      */
     public $select;
-    
-    
-    
+
     /**
-     * 
      * @var string
      */
     public $sql;
-    
-    
-    
+
     /**
-     * 
+     *
      * @var array
      */
     public $bindings = array();
-    
-    
-    
+
+    /**
+     * Mzax_Db_Select_Exception constructor.
+     *
+     * @param string $msg
+     * @param int $code
+     * @param Mzax_Db_Select|null $select
+     * @param Exception|null $previous
+     */
     public function __construct($msg = '', $code = 0, Mzax_Db_Select $select = null, Exception $previous = null)
     {
         parent::__construct($msg, $code, $previous);
         $this->select = $select;
-        if($select) {
+        if ($select) {
             $this->bindings = $select->getBindings();
         }
     }
-    
-    
-    
+
     /**
      * String representation of the exception
      *
@@ -75,18 +63,17 @@ class Mzax_Db_Select_Exception extends Zend_Db_Exception
     public function __toString()
     {
         $str = parent::__toString();
-        
-        if($this->sql) {
+
+        if ($this->sql) {
             $str .= "\n\n" . $this->sql;
         }
-        if(!empty($this->bindings)) {
+        if (!empty($this->bindings)) {
             $str .= "\nBindings:";
-            foreach($this->bindings as $name => $expr) {
+            foreach ($this->bindings as $name => $expr) {
                 $str .= "\n\t" . $name . " \t->  " . $expr;
             }
         }
-        
+
         return $str;
     }
-    
 }

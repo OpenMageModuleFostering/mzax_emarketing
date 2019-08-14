@@ -29,6 +29,8 @@
  * which is copyright Ian Bicking, @see https://github.com/SimonSapin/cssselect.
  *
  * @author Jean-François Simon <jeanfrancois.simon@sensiolabs.com>
+ *
+ * @internal
  */
 class Symfony_Component_CssSelector_XPath_Translator implements Symfony_Component_CssSelector_XPath_TranslatorInterface
 {
@@ -72,9 +74,6 @@ class Symfony_Component_CssSelector_XPath_Translator implements Symfony_Componen
      */
     private $attributeMatchingTranslators = array();
 
-    /**
-     * Constructor.
-     */
     public function __construct(Symfony_Component_CssSelector_Parser_ParserInterface $parser = null)
     {
         $this->mainParser = $parser ?: new Symfony_Component_CssSelector_Parser_Parser();
@@ -270,9 +269,9 @@ class Symfony_Component_CssSelector_XPath_Translator implements Symfony_Componen
      * @param string    $attribute
      * @param string    $value
      *
-     * @throws Symfony_Component_CssSelector_Exception_ExpressionErrorException
-     *
      * @return Symfony_Component_CssSelector_XPath_XPathExpr
+     *
+     * @throws Symfony_Component_CssSelector_Exception_ExpressionErrorException
      */
     public function addAttributeMatching(Symfony_Component_CssSelector_XPath_XPathExpr $xpath, $operator, $attribute, $value)
     {

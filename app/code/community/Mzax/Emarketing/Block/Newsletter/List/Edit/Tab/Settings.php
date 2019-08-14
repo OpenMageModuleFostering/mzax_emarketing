@@ -9,7 +9,6 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  *
- * @version     0.4.9
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -18,42 +17,35 @@
  */
 
 
+/**
+ * Class Mzax_Emarketing_Block_Newsletter_List_Edit_Tab_Settings
+ */
 class Mzax_Emarketing_Block_Newsletter_List_Edit_Tab_Settings extends Mage_Adminhtml_Block_Widget_Form
 {
-
-    protected function _prepareLayout()
-    {
-        parent::_prepareLayout();
-    }
-
-
-
+    /**
+     * @return Mage_Adminhtml_Block_Widget_Form
+     */
     public function initForm()
     {
         $form = new Varien_Data_Form();
         $form->setHtmlIdPrefix('list_');
         $form->setFieldNameSuffix('list');
 
-
-
         /* @var $list Mzax_Emarketing_Model_Newsletter_List */
         $list = Mage::registry('current_list');
 
 
-        if($list->getId()) {
+        if ($list->getId()) {
             $form->addField('list_id', 'hidden', array(
                 'name'  => 'list_id',
                 'value' => $list->getId()
             ));
         }
 
-
         $fieldset = $form->addFieldset('base_fieldset', array(
             'legend' => $this->__('List Options'),
             'class'  => 'fieldset-wide',
         ));
-
-
 
         $fieldset->addField('name', 'text', array(
             'name'      => 'name',
@@ -71,8 +63,6 @@ class Mzax_Emarketing_Block_Newsletter_List_Edit_Tab_Settings extends Mage_Admin
             'note'      => "Optional short description for the subscriber",
         ));
 
-
-
         $fieldset->addField('is_private', 'select', array(
             'label'     => $this->__('Visibility'),
             'title'     => $this->__('Visibility'),
@@ -85,8 +75,6 @@ class Mzax_Emarketing_Block_Newsletter_List_Edit_Tab_Settings extends Mage_Admin
             ),
             'value' => '0'
         ));
-
-
 
         $fieldset->addField('auto_subscribe', 'select', array(
             'label'     => $this->__('Auto Subscribe'),
@@ -101,8 +89,6 @@ class Mzax_Emarketing_Block_Newsletter_List_Edit_Tab_Settings extends Mage_Admin
             'value' => '1'
         ));
 
-
-
         if (!Mage::app()->isSingleStoreMode()) {
             $fieldset->addField('store_ids', 'multiselect', array(
                 'name'      => 'store_ids[]',
@@ -111,13 +97,11 @@ class Mzax_Emarketing_Block_Newsletter_List_Edit_Tab_Settings extends Mage_Admin
                 'required'  => true,
                 'values'    => Mage::getSingleton('adminhtml/system_store')->getStoreValuesForForm(false, true),
             ));
-        }
-        else {
+        } else {
             $fieldset->addField('store_ids', 'hidden', array(
                 'name'      => 'store_ids[]'
             ));
         }
-
 
         $form->addValues($list->getData());
         $this->setForm($form);
