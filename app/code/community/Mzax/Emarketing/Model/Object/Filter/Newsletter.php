@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.8
+ * @version     0.4.9
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -27,7 +27,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.4.8
+ * @version 0.4.9
  */
 class Mzax_Emarketing_Model_Object_Filter_Newsletter
     extends Mzax_Emarketing_Model_Object_Filter_Abstract
@@ -72,9 +72,7 @@ class Mzax_Emarketing_Model_Object_Filter_Newsletter
                 $query->joinTableLeft('customer_id', 'newsletter/subscriber', 'subscriber');
             }
             $query->addBinding('subscriber_status', 'subscriber.subscriber_status');
-        }   
-
-        $condition = $condition === 'is' ? '=' : '!=';
+        }
 
         if($condition === 'is') {
             $query->where("{subscriber_status} = ?", $status);
