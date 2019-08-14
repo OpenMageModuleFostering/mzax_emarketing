@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.7
+ * @version     0.3.0
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -106,8 +106,23 @@ class Mzax_Emarketing_Model_Resource_Recipient_Goal_Binder
             try {
                 $select->assemble();
             }
+            catch(Mzax_Db_Select_Exception $e) {
+                if(Mage::getIsDeveloperMode()) {
+                    throw $e;
+                }
+                Mage::logException($e);
+            }
             catch(Exception $e) {
-                Mage::log($e->getMessage());
+                if(Mage::getIsDeveloperMode()) {
+                    throw $e;
+                }
+                
+                $message = "Failed to assamble goal binder select:";
+                $message.= $e->getMessage() . "\n";
+                $message.= $e->getTraceAsString();
+                
+                Mage::log($message, Zend_Log::WARN);
+                Mage::logException($e);
                 continue;
             }
             

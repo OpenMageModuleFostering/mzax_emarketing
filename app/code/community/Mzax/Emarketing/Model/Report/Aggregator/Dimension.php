@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.7
+ * @version     0.3.0
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -54,6 +54,11 @@ class Mzax_Emarketing_Model_Report_Aggregator_Dimension extends Mzax_Emarketing_
             if($campaignId = $this->getOption('campaign_id')) {
                 $this->delete(array('`campaign_id` IN(?)' => $campaignId), self::TABLE_REPORT);
                 $this->delete(array('`campaign_id` IN(?)' => $campaignId), self::TABLE_CONVERSION);
+            }
+            if($incremental = abs($this->getOption('incremental'))) {
+                $where = "`date` >= DATE_SUB(NOW(), INTERVAL $incremental DAY)";
+                $this->delete($where, self::TABLE_REPORT);
+                $this->delete($where, self::TABLE_CONVERSION);
             }
         }
         foreach($this->_dimensions as $type) {

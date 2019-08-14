@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.7
+ * @version     0.3.0
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -58,7 +58,7 @@ class Mzax_Emarketing_Model_Report_Aggregator_Dimension_Useragent
      * @todo Add a time limit so we don't use to old data
      * @param Mzax_Emarketing_Db_Select $select
      */
-    protected function joinLastViewEvent(Mzax_Emarketing_Db_Select $select, $type = Mzax_Emarketing_Model_Recipient::EVENT_TYPE_VIEW)
+    protected function joinLastViewEvent(Mzax_Emarketing_Db_Select $select)
     {
         if($select->hasAnyBindings('event_id', 'useragent_id')) {
             return;

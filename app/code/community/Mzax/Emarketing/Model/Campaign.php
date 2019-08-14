@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.7
+ * @version     0.3.0
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -372,6 +372,73 @@ class Mzax_Emarketing_Model_Campaign
         return false;
     }
     
+    
+    
+    
+    /**
+     * Retrieve tags
+     * 
+     * @return array
+     */
+    public function getTags()
+    {
+        $data = $this->getData('tags');
+        return preg_split('/[\s,]+/', $data, -1, PREG_SPLIT_NO_EMPTY);
+    }
+    
+    
+    /**
+     * Set tags
+     * 
+     * @param string|array $value
+     * @return Mzax_Emarketing_Model_Campaign
+     */
+    public function setTags($value)
+    {
+        if(is_array($value)) {
+            $value = array_unique($value);
+            $value = implode(',', $value);
+        }
+        return $this->setData('tags', $value);
+    }
+    
+    
+    /**
+     * Add tags to campaign
+     * 
+     * @param string|array $tags
+     * @return Mzax_Emarketing_Model_Campaign
+     */
+    public function addTags($tags)
+    {
+        if(is_string($tags)) {
+            $tags = preg_split('/[\s,]+/', $tags, -1, PREG_SPLIT_NO_EMPTY);
+        }
+        if(is_array($tags)) {
+            $tags = array_merge($this->getTags(), $tags);
+            $this->setTags($tags);
+        }
+        return $this;
+    }
+    
+    
+    /**
+     * Remove tags from campaign
+     *
+     * @param string|array $tags
+     * @return Mzax_Emarketing_Model_Campaign
+     */
+    public function removeTags($tags)
+    {
+        if(is_string($tags)) {
+            $tags = preg_split('/[\s,]+/', $tags, -1, PREG_SPLIT_NO_EMPTY);
+        }
+        if(is_array($tags)) {
+            $tags = array_diff($this->getTags(), $tags);
+            $this->setTags($tags);
+        }
+        return $this;
+    }
     
     
 

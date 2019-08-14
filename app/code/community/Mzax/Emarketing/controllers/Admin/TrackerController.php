@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.7
+ * @version     0.3.0
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -24,7 +24,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.2.7
+ * @version 0.3.0
  */
 class Mzax_Emarketing_Admin_TrackerController extends Mage_Adminhtml_Controller_Action
 {
@@ -82,6 +82,7 @@ class Mzax_Emarketing_Admin_TrackerController extends Mage_Adminhtml_Controller_
      */
     public function gridAction()
     {
+        $this->loadLayout();
         $this->getResponse()->setBody($this->getLayout()->createBlock('mzax_emarketing/tracker_grid')->toHtml());
     }
     
@@ -625,4 +626,16 @@ class Mzax_Emarketing_Admin_TrackerController extends Mage_Adminhtml_Controller_
         return $tracker;
     }
     
+    
+
+    /**
+     * ACL check
+     *
+     * @return boolean
+     */
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')
+            ->isAllowed('promo/emarketing/trackers');
+    }
 }

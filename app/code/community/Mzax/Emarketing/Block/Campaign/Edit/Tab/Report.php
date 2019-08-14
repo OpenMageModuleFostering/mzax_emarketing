@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.7
+ * @version     0.3.0
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -25,7 +25,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.2.7
+ * @version 0.3.0
  */
 class Mzax_Emarketing_Block_Campaign_Edit_Tab_Report extends Mage_Adminhtml_Block_Widget
 {
@@ -359,7 +359,7 @@ JS;
         $clicks = $this->createCircle('clicks', $this->getTotals()->getCell('clicks'), self::COLOR_CLICKS);
         $orders = $this->createCircle('orders', $this->getTotals()->getCell('conversion'), self::COLOR_CONVERSIONS);
 
-        $optout = $this->createCircle('orders', $this->getTotals()->getSum('bounces', 'optouts'));
+        $optout = $this->createCircle('optouts', $this->getTotals()->getSum('bounces', 'optouts'));
         $optout->setColors(array(self::COLOR_OPTOUT, self::COLOR_BOUNDS, self::COLOR_BLANK));
         $optout->clearRows();
         $optout->addRow(array('optout', $this->getTotals()->getCell('optouts')));

@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.7
+ * @version     0.3.0
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -23,7 +23,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.2.7
+ * @version 0.3.0
  */
 class Mzax_Db_Select extends Varien_Db_Select
 {
@@ -219,6 +219,17 @@ class Mzax_Db_Select extends Varien_Db_Select
     
     
     
+    /**
+     * Retrieve all bindings
+     * 
+     * @return array
+     */
+    public function getBindings()
+    {
+        return $this->_binding;
+    }
+    
+    
     
     /**
      * Check if object provides any of the given bindings
@@ -251,7 +262,7 @@ class Mzax_Db_Select extends Varien_Db_Select
                 return true;
             }
         }
-        return true;
+        return false;
     }
 
     
@@ -561,13 +572,18 @@ class Mzax_Db_Select extends Varien_Db_Select
     {
         $sql = parent::assemble();
         $bindings = $this->_binding;
+        $select   = $this;
         $regex    = '/{([a-z_]+)}/i';
         
-        $cb = function($match) use (&$cb, $regex, $bindings) {
+        $cb = function($match) use (&$cb, $regex, $bindings, $sql, $select) {
             if(isset($bindings[$match[1]])) {
                 return preg_replace_callback($regex, $cb, $bindings[$match[1]]);
             }
-            throw new Exception("Binding '{$match[1]}' does not exist");
+            
+            $exception = new Mzax_Db_Select_Exception("Binding '{$match[1]}' does not exist", 1001, $select);
+            $exception->sql = $sql;
+            
+            throw $exception;
         };
         
         // replace all binding placeholders

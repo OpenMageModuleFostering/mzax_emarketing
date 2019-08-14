@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.7
+ * @version     0.3.0
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -130,7 +130,7 @@ class Mzax_Emarketing_Model_Resource_Campaign_Preset
             throw new Exception("Failed to install preset");
         }
         
-        @chmod($file, 0666);
+        @chmod($file, 0777);
         
         return $this;
     }

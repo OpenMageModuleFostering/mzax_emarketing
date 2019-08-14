@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.7
+ * @version     0.3.0
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -79,6 +79,7 @@ class Mzax_Emarketing_Admin_OutboxController extends Mage_Adminhtml_Controller_A
     
     public function gridAction()
     {
+        $this->loadLayout();
         $this->getResponse()->setBody($this->getLayout()->createBlock('mzax_emarketing/outbox_grid')->toHtml());
     }
     
@@ -86,6 +87,7 @@ class Mzax_Emarketing_Admin_OutboxController extends Mage_Adminhtml_Controller_A
     
     public function campaignGridAction()
     {
+        $this->loadLayout();
         $this->getResponse()->setBody($this->getLayout()->createBlock('mzax_emarketing/campaign_edit_medium_email_tab_outbox')->toHtml());
     }
     
@@ -264,4 +266,16 @@ class Mzax_Emarketing_Admin_OutboxController extends Mage_Adminhtml_Controller_A
         return Mage::getSingleton('mzax_emarketing/outbox');
     }
     
+    
+
+    /**
+     * ACL check
+     *
+     * @return boolean
+     */
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')
+            ->isAllowed('promo/emarketing/email');
+    }
 }

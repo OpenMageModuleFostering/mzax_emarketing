@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.7
+ * @version     0.3.0
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -37,7 +37,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.2.7
+ * @version 0.3.0
  */
 class Mzax_Emarketing_Model_Report_Aggregator_Goals
     extends Mzax_Emarketing_Model_Report_Aggregator_Abstract
@@ -75,6 +75,9 @@ class Mzax_Emarketing_Model_Report_Aggregator_Goals
             }
             if($campaignId = $this->getOption('campaign_id')) {
                 $this->delete(array('`campaign_id` IN(?)' => $campaignId));
+            }
+            if($incremental = abs($this->getOption('incremental'))) {
+                $this->delete(array("`goal_time` >= DATE_SUB(?, INTERVAL $incremental DAY)" => $this->getLastRecordTime()));
             }
         }
         

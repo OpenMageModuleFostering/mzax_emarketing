@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.7
+ * @version     0.3.0
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -26,7 +26,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.2.7
+ * @version 0.3.0
  */
 class Mzax_Emarketing_Model_Observer_Cron
     extends Mzax_Emarketing_Model_Observer_Abstract
@@ -73,6 +73,7 @@ class Mzax_Emarketing_Model_Observer_Cron
         echo "Aggregate reports... ";
         $this->aggregateWeekly();
         echo "done\n\n";
+        
         
         $this->_testMode = false;
     }
@@ -198,7 +199,7 @@ class Mzax_Emarketing_Model_Observer_Cron
         
         /* @var $report Mzax_Emarketing_Model_Report */
         $report = Mage::getModel('mzax_emarketing/report');
-        $report->fetchGeoIp();
+        $report->fetchGeoIp($this->_testMode);
         $report->parseUseragents();
     }
     

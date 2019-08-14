@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.7
+ * @version     0.3.0
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -23,7 +23,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.2.7
+ * @version 0.3.0
  */
 class Mzax_Bounce_Message extends Mzax_Bounce_Mime_Part
 {
@@ -96,6 +96,21 @@ class Mzax_Bounce_Message extends Mzax_Bounce_Mime_Part
                 $result[] = trim($ref, '<>');
             }
         }
+        
+        // we may also find usefull reference in any rfc822 parts
+        if($part = $this->getMimePart('text/rfc822')) {
+            if($id = $part->getHeader('message-id')) {
+                $result[] = trim($id, '<>');
+            }
+        }
+        
+        if($part = $this->getMimePart('text/rfc822-headers')) {
+            $hash = $part->getDecodedHash();
+            if(isset($hash['message-id'])) {
+                $result[] = trim($hash['message-id'], '<>');
+            }
+        }
+        
         return $result;
     }
     

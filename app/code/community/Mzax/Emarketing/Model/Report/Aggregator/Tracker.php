@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.7
+ * @version     0.3.0
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -44,6 +44,9 @@ class Mzax_Emarketing_Model_Report_Aggregator_Tracker
             }
             if($campaignId = $this->getOption('campaign_id')) {
                 $this->delete(array('`campaign_id` IN(?)' => $campaignId));
+            }
+            if($incremental = abs($this->getOption('incremental'))) {
+                $this->delete(array("`date` >= DATE_SUB(?, INTERVAL $incremental DAY)" => $this->getLastRecordTime()));
             }
         }
         $this->aggregateConversionReport();

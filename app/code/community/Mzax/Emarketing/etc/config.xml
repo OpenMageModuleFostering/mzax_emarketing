@@ -10,7 +10,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.2.7
+ * @version     0.3.0
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -21,7 +21,7 @@
 <config>
     <modules>
         <Mzax_Emarketing>
-        	<version>0.2.7</version>
+        	<version>0.3.0</version>
 		</Mzax_Emarketing>
 	</modules>
     <global>
@@ -364,7 +364,7 @@
 				<css_inliner>1</css_inliner>
 				<remove_comments>1</remove_comments>
 				<test_mode>1</test_mode>
-				<list_unsubscibe>1</list_unsubscibe>
+				<list_unsubscribe>1</list_unsubscribe>
 				<transporter>sendmail</transporter>
 			</email>
         </mzax_emarketing>
