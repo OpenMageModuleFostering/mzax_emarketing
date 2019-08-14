@@ -27,8 +27,6 @@
  * which is copyright Ian Bicking, @see https://github.com/SimonSapin/cssselect.
  *
  * @author Jean-François Simon <jeanfrancois.simon@sensiolabs.com>
- *
- * @internal
  */
 class Symfony_Component_CssSelector_XPath_Extension_HtmlExtension extends Symfony_Component_CssSelector_XPath_Extension_AbstractExtension
 {

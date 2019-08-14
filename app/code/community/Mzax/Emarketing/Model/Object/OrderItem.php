@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.10
+ * @version     0.4.2
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -42,7 +42,7 @@ class Mzax_Emarketing_Model_Object_OrderItem extends Mzax_Emarketing_Model_Objec
     
     public function getAdminUrl($id)
     {
-        return $this->getUrl('adminhtml/emarketing_shortcut/orderItem', array('id' => $id));
+        return $this->getUrl('admin_mzax_emarketing/admin_shortcut/orderItem', array('id' => $id));
     }
     
     

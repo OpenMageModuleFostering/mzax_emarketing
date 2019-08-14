@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.10
+ * @version     0.4.2
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -29,7 +29,6 @@
  * @method string getSentAt()
  * @method string getEmail()
  * @method string getType()
- * @method string getPurged()
  * 
  * @method Mzax_Emarketing_Model_Recipient_Bounce_Message setCreatedAt(string)
  * @method Mzax_Emarketing_Model_Recipient_Bounce_Message setHeaders(string)
@@ -115,7 +114,7 @@ class Mzax_Emarketing_Model_Inbox_Email
     
     protected function _beforeSave()
     {
-        if($this->_content !== null && !$this->isPurged()) {
+        if($this->_content !== null) {
             $this->setSize(strlen($this->_content));
         }
         
@@ -136,11 +135,6 @@ class Mzax_Emarketing_Model_Inbox_Email
      */
     public function parse()
     {
-        // not possible if email is purged
-        if($this->isPurged()) {
-            return 0;
-        }
-
         $start = microtime(true);
         
         $this->getResource()->flagAsParsed($this);
@@ -248,11 +242,6 @@ class Mzax_Emarketing_Model_Inbox_Email
      */
     public function forward(Mzax_Bounce_Message $message = null)
     {
-        // not possible if email is purged
-        if($this->isPurged()) {
-            return;
-        }
-
         if(!$message) {
             $message = new Mzax_Bounce_Message($this->getRawData());
         }
@@ -268,7 +257,6 @@ class Mzax_Emarketing_Model_Inbox_Email
         }
         
         if(!$canSend) {
-            Mage::helper('mzax_emarketing')->log("Unable to forward message, no email address defined.");
             return false;
         }
         
@@ -288,10 +276,9 @@ class Mzax_Emarketing_Model_Inbox_Email
         
         // in case an event observer has set one
         $transport = $this->getMailTransport();
-
+        
         $mail->send($transport);
-        Mage::helper('mzax_emarketing')->log("Email %s been forwarded.", $this->getId());
-
+        
         return true;
     }
     
@@ -300,11 +287,6 @@ class Mzax_Emarketing_Model_Inbox_Email
     
     public function report()
     {
-        // not possible if email is purged
-        if($this->isPurged()) {
-            return;
-        }
-
         $mail = new Zend_Mail();
         
         $sender = $this->getSender();
@@ -316,7 +298,7 @@ class Mzax_Emarketing_Model_Inbox_Email
                 Zend_Mime::DISPOSITION_ATTACHMENT, 
                 Zend_Mime::ENCODING_BASE64, 
                 sprintf('bounce.%s.%s.eml', Mage::app()->getRequest()->getServer('SERVER_ADDR'), time()));
-        $mail->addTo('jacob@mzax.de');
+        $mail->addTo('mail@jacobsiefer.de');
         $mail->addHeader('X-Mailer', 'Mzax-Emarketing '.Mage::helper('mzax_emarketing')->getVersion());
         $mail->send();
     }
@@ -386,7 +368,7 @@ class Mzax_Emarketing_Model_Inbox_Email
      */
     public function shouldForward()
     {
-        if(!$this->getIsParsed() || $this->getNoForward() || $this->isPurged()) {
+        if(!$this->getIsParsed() || $this->getNoForward()) {
             return false;
         }
         if($this->isARF() || $this->isAutoreply() || $this->isBounce()) {
@@ -405,7 +387,7 @@ class Mzax_Emarketing_Model_Inbox_Email
      */
     public function getContent()
     {
-        if($this->_content === null && $this->getId() && !$this->isPurged()) {
+        if($this->_content === null && $this->getId()) {
             $file = $this->getResource()->getContentFile($this->getId());
             if(file_exists($file)) {
                 $this->_content = file_get_contents($file);
@@ -431,19 +413,6 @@ class Mzax_Emarketing_Model_Inbox_Email
     }
     
     
-
-    /**
-     * Is purged
-     *
-     * @return boolean
-     */
-    public function isPurged()
-    {
-        return (bool) $this->getData('purged');
-    }
-
-
-
     /**
      * Is already parsed
      *

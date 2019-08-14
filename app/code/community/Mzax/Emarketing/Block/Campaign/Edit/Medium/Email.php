@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.10
+ * @version     0.4.2
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -72,7 +72,7 @@ class Mzax_Emarketing_Block_Campaign_Edit_Medium_Email extends Mzax_Emarketing_B
                 'label'     => $this->__('Template'),
                 'class'     => 'mzax-template-select',
                 'text'      => $this->__("Before you can create an email campaign, you need to setup at least one email template."),
-                'after_element_html' => $this->__(' <a href="%s" target="_blank">Edit Templates</a>', $this->getUrl('*/emarketing_template')),
+                'after_element_html' => $this->__(' <a href="%s" target="_blank">Edit Templates</a>', $this->getUrl('*/admin_template')),
             ));
             return;
         }
@@ -97,7 +97,7 @@ class Mzax_Emarketing_Block_Campaign_Edit_Medium_Email extends Mzax_Emarketing_B
             'values'    => $templateOptions,
             'class'     => 'mzax-template-select',
             'note'      => $this->__("A template is required for sending out emails"),
-            'after_element_html' => $this->__(' <a href="%s" target="_blank">Edit Templates</a>', $this->getUrl('*/emarketing_template')),
+            'after_element_html' => $this->__(' <a href="%s" target="_blank">Edit Templates</a>', $this->getUrl('*/admin_template')),
         ));
         
         
@@ -196,16 +196,6 @@ class Mzax_Emarketing_Block_Campaign_Edit_Medium_Email extends Mzax_Emarketing_B
             'text'      => $this->__('Keep in mind that this option can significantly delay an email from getting send out. Depending on your campaign this may not be a problem, but sometimes it can. You may want to double check the expire time under "Settings" and make sure it is high enough.')
         ))->setRenderer($renderer);
         
-
-
-        $fieldset->addField('day_filter_empty', 'hidden', array(
-            'name'      => 'day_filter',
-            'value'     => '',
-        ));
-        $fieldset->addField('time_filter_empty', 'hidden', array(
-            'name'      => 'time_filter',
-            'value'     => '',
-        ));
         
         $fieldset->addField('day_filter', 'checkboxes', array(
             'name'      => 'day_filter[]',

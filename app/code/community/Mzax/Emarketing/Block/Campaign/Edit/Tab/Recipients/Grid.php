@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.10
+ * @version     0.4.2
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -96,13 +96,11 @@ class Mzax_Emarketing_Block_Campaign_Edit_Tab_Recipients_Grid extends Mzax_Emark
     {
         return $this->getUrl('*/*/*', array('_current' => true));
     }
-
-
-    public function getAdditionalJavaScript()
+    
+    
+    protected function getAdditionalJavascript()
     {
-        $object = $this->getMassactionBlock()->getJsObjectName();
-        return "window.{$object} = {$object};";
+        return "window.{$this->getId()}_massactionJsObject = {$this->getId()}_massactionJsObject;";
     }
-
     
 }

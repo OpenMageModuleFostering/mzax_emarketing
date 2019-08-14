@@ -5,13 +5,16 @@
  */
 #namespace TijsVerkoyen\CssToInlineStyles;
 
+#use Symfony\Component\CssSelector\CssSelector;
+#use Symfony\Component\CssSelector\Exception\ExceptionInterface;
+
 /**
  * CSS to Inline Styles class
  *
  * @author         Tijs Verkoyen <php-css-to-inline-styles@verkoyen.eu>
- * @version        1.5.5
+ * @version        1.5.4
  * @copyright      Copyright (c), Tijs Verkoyen. All rights reserved.
- * @license        Revised BSD License
+ * @license        BSD License
  */
 class TijsVerkoyen_CssToInlineStyles_CssToInlineStyles
 {
@@ -21,6 +24,13 @@ class TijsVerkoyen_CssToInlineStyles_CssToInlineStyles
      * @var    string
      */
     private $css;
+
+    /**
+     * The processed CSS rules
+     *
+     * @var    array
+     */
+    private $cssRules;
 
     /**
      * Should the generated HTML be cleaned
@@ -83,18 +93,21 @@ class TijsVerkoyen_CssToInlineStyles_CssToInlineStyles
     }
 
     /**
-     * Remove id and class attributes.
+     * Cleanup the generated HTML
      *
      * @return string
-     * @param  DOMXPath $xPath The DOMXPath for the entire document.
+     * @param  string $html The HTML to cleanup.
      */
-    private function cleanupHTML(DOMXPath $xPath)
+    private function cleanupHTML($html)
     {
-        $nodes = $xPath->query('//@class | //@id');
+        // remove classes
+        $html = preg_replace('/(\s)+class="(.*)"(\s)*/U', ' ', $html);
 
-        foreach ($nodes as $node) {
-            $node->ownerElement->removeAttributeNode($node);
-        }
+        // remove IDs
+        $html = preg_replace('/(\s)+id="(.*)"(\s)*/U', ' ', $html);
+
+        // return
+        return $html;
     }
 
     /**
@@ -131,7 +144,7 @@ class TijsVerkoyen_CssToInlineStyles_CssToInlineStyles
         }
 
         // process css
-        $cssRules = $this->processCSS();
+        $this->processCSS();
 
         // create new DOMDocument
         $document = new DOMDocument('1.0', $this->getEncoding());
@@ -149,14 +162,12 @@ class TijsVerkoyen_CssToInlineStyles_CssToInlineStyles
         $xPath = new DOMXPath($document);
 
         // any rules?
-        if (!empty($cssRules)) {
+        if (!empty($this->cssRules)) {
             // loop rules
-            foreach ($cssRules as $rule) {
-
-                $selector = new TijsVerkoyen_CssToInlineStyles_Selector($rule['selector']);
-                $query = $selector->toXPath();
-
-                if (is_null($query)) {
+            foreach ($this->cssRules as $rule) {
+                try {
+                    $query = Symfony_Component_CssSelector_CssSelector::toXPath($rule['selector']);
+                } catch (Symfony_Component_CssSelector_Exception_ExceptionInterface $e) {
                     continue;
                 }
 
@@ -361,11 +372,6 @@ class TijsVerkoyen_CssToInlineStyles_CssToInlineStyles
             $this->stripOriginalStyleTags($xPath);
         }
 
-        // cleanup the HTML if we need to
-        if ($this->cleanup) {
-            $this->cleanupHTML($xPath);
-        }
-
         // should we output XHTML?
         if ($outputXHTML) {
             // set formating
@@ -375,11 +381,16 @@ class TijsVerkoyen_CssToInlineStyles_CssToInlineStyles
             $html = $document->saveXML(null, LIBXML_NOEMPTYTAG);
 
             // remove the XML-header
-            $html = ltrim(preg_replace('/<\?xml (.*)\?>/', '', $html));
+            $html = ltrim(preg_replace('/<?xml (.*)?>/', '', $html));
         } // just regular HTML 4.01 as it should be used in newsletters
         else {
             // get the HTML
             $html = $document->saveHTML();
+        }
+
+        // cleanup the HTML if we need to
+        if ($this->cleanup) {
+            $html = $this->cleanupHTML($html);
         }
 
         // return
@@ -421,13 +432,12 @@ class TijsVerkoyen_CssToInlineStyles_CssToInlineStyles
     /**
      * Process the loaded CSS
      *
-     * @return array
+     * @return void
      */
     private function processCSS()
     {
         // init vars
         $css = (string) $this->css;
-        $cssRules = array();
 
         // remove newlines
         $css = str_replace(array("\r", "\n"), '', $css);
@@ -493,7 +503,7 @@ class TijsVerkoyen_CssToInlineStyles_CssToInlineStyles
                 $ruleSet['order'] = $i;
 
                 // add into global rules
-                $cssRules[] = $ruleSet;
+                $this->cssRules[] = $ruleSet;
             }
 
             // increment
@@ -501,11 +511,9 @@ class TijsVerkoyen_CssToInlineStyles_CssToInlineStyles
         }
 
         // sort based on specificity
-        if (!empty($cssRules)) {
-            usort($cssRules, array(__CLASS__, 'sortOnSpecificity'));
+        if (!empty($this->cssRules)) {
+            usort($this->cssRules, array(__CLASS__, 'sortOnSpecificity'));
         }
-
-        return $cssRules;
     }
 
     /**

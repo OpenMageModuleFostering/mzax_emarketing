@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.10
+ * @version     0.4.2
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -23,7 +23,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.4.10
+ * @version 0.4.2
  */
 class Mzax_Emarketing_Block_Campaign_Edit_Tab_Errors extends Mage_Adminhtml_Block_Widget_Grid
 {
@@ -103,7 +103,7 @@ class Mzax_Emarketing_Block_Campaign_Edit_Tab_Errors extends Mage_Adminhtml_Bloc
     public function getRowUrl($row)
     {
         return null;
-        //return $this->getUrl('*/emarketing_outbox/email', array('id'=>$row->getId()));
+        //return $this->getUrl('*/admin_outbox/email', array('id'=>$row->getId()));
     }
     
     

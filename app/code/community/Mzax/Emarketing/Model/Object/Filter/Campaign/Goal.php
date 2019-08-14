@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.10
+ * @version     0.4.2
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -34,7 +34,7 @@ class Mzax_Emarketing_Model_Object_Filter_Campaign_Goal
     
     const ACTION_CLICKED  = 'clicked';
     const ACTION_VIEWED   = 'viewed';
-    const ACTION_RECEIVED = 'recieved';
+    const ACTION_RECIEVED = 'recieved';
     
     
     
@@ -137,7 +137,7 @@ class Mzax_Emarketing_Model_Object_Filter_Campaign_Goal
         return array(
             self::ACTION_VIEWED   => $this->__('viewed'),
             self::ACTION_CLICKED  => $this->__('clicked'),
-            self::ACTION_RECEIVED => $this->__('recieved'),
+            self::ACTION_RECIEVED => $this->__('recieved'),
         );
     }
     

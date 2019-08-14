@@ -24,8 +24,6 @@
  * which is copyright Ian Bicking, @see https://github.com/SimonSapin/cssselect.
  *
  * @author Jean-François Simon <jeanfrancois.simon@sensiolabs.com>
- *
- * @internal
  */
 class Symfony_Component_CssSelector_Node_FunctionNode extends Symfony_Component_CssSelector_Node_AbstractNode
 {

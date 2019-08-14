@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.10
+ * @version     0.4.2
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -24,7 +24,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.4.10
+ * @version 0.4.2
  */
 class Mzax_Emarketing_Model_Object_Filter_Order_Campaign
     extends Mzax_Emarketing_Model_Object_Filter_Order_Abstract
@@ -69,9 +69,9 @@ class Mzax_Emarketing_Model_Object_Filter_Order_Campaign
     
     
     public function getQuery()
-    {
+    { 
         $campaign = $this->getCampaign();
-
+                
         $query = $this->getObject()->getQuery();
         if($campaign) {
             $query->joinSelect('recipient_id', $this->getRecipientsByOrder(), 'recipient_order');
@@ -223,18 +223,14 @@ class Mzax_Emarketing_Model_Object_Filter_Order_Campaign
             $id = $this->getDataSetDefault('campaign');
             
             if($id === 'current') {
-                return $this->getParam('campaign');
+                $this->_campaign = $this->getParam('campaign');
             }
-            $campaign = Mage::getModel('mzax_emarketing/campaign');
-            if(!$id) {
-                return null;
+            if(!$this->_campaign instanceof Mzax_Emarketing_Model_Campaign) {
+                $this->_campaign = Mage::getModel('mzax_emarketing/campaign');
+                if($id > 0) {
+                    $this->_campaign->load($id);
+                }
             }
-            $campaign->load($id);
-            if(!$campaign->getId()) {
-                return null;
-            }
-
-            $this->_campaign = $campaign;
         }
         return $this->_campaign;
     }

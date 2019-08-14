@@ -15,7 +15,12 @@
 
 #namespace Symfony\Component\CssSelector;
 
-@trigger_error('The '.__NAMESPACE__.'CssSelector class is deprecated since version 2.8 and will be removed in 3.0. Use directly the Symfony\Component\CssSelector\CssSelectorConverter class instead.', E_USER_DEPRECATED);
+#use Symfony\Component\CssSelector\Parser\Shortcut\ClassParser;
+#use Symfony\Component\CssSelector\Parser\Shortcut\ElementParser;
+#use Symfony\Component\CssSelector\Parser\Shortcut\EmptyStringParser;
+#use Symfony\Component\CssSelector\Parser\Shortcut\HashParser;
+#use Symfony\Component\CssSelector\XPath\Extension\HtmlExtension;
+#use Symfony\Component\CssSelector\XPath\Translator;
 
 /**
  * Symfony_Component_CssSelector_CssSelector is the main entry point of the component and can convert CSS
@@ -61,7 +66,7 @@
  *
  * @author Fabien Potencier <fabien@symfony.com>
  *
- * @deprecated as of 2.8, will be removed in 3.0. Use the Symfony\Component\CssSelector\CssSelectorConverter class instead.
+ * @api
  */
 class Symfony_Component_CssSelector_CssSelector
 {
@@ -76,12 +81,25 @@ class Symfony_Component_CssSelector_CssSelector
      * @param string $prefix  An optional prefix for the XPath expression.
      *
      * @return string
+     *
+     * @api
      */
     public static function toXPath($cssExpr, $prefix = 'descendant-or-self::')
     {
-        $converter = new Symfony_Component_CssSelector_CssSelectorConverter(self::$html);
+        $translator = new Symfony_Component_CssSelector_XPath_Translator();
 
-        return $converter->toXPath($cssExpr, $prefix);
+        if (self::$html) {
+            $translator->registerExtension(new Symfony_Component_CssSelector_XPath_Extension_HtmlExtension($translator));
+        }
+
+        $translator
+            ->registerParserShortcut(new Symfony_Component_CssSelector_Parser_Shortcut_EmptyStringParser())
+            ->registerParserShortcut(new Symfony_Component_CssSelector_Parser_Shortcut_ElementParser())
+            ->registerParserShortcut(new Symfony_Component_CssSelector_Parser_Shortcut_ClassParser())
+            ->registerParserShortcut(new Symfony_Component_CssSelector_Parser_Shortcut_HashParser())
+        ;
+
+        return $translator->cssToXPath($cssExpr, $prefix);
     }
 
     /**

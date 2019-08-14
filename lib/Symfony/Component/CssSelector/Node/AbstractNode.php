@@ -22,8 +22,6 @@
  * which is copyright Ian Bicking, @see https://github.com/SimonSapin/cssselect.
  *
  * @author Jean-François Simon <jeanfrancois.simon@sensiolabs.com>
- *
- * @internal
  */
 abstract class Symfony_Component_CssSelector_Node_AbstractNode implements Symfony_Component_CssSelector_Node_NodeInterface
 {

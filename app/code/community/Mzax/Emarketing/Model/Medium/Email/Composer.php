@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.10
+ * @version     0.4.2
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -24,7 +24,7 @@
  * 
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.4.10
+ * @version 0.4.2
  */
 class Mzax_Emarketing_Model_Medium_Email_Composer
     extends Mage_Core_Model_Template
@@ -192,7 +192,6 @@ class Mzax_Emarketing_Model_Medium_Email_Composer
         /* @var $processor Mzax_Emarketing_Model_Medium_Email_Processor */
         $processor = Mage::getModel('mzax_emarketing/medium_email_processor');
         $processor->setCouponManager($this);
-        $processor->isPreview();
         $processor->setStoreId($recipient->getStoreId());
         $processor->setContent($this->getContent());
         $processor->setVariables($recipient->getData());
@@ -282,10 +281,9 @@ class Mzax_Emarketing_Model_Medium_Email_Composer
      * Parse all mage expresions and prepare html for sending
      * 
      * @throws Exception
-     * @param boolean $previewMode
      * @return Mzax_Emarketing_Model_Medium_Email_Composer
      */
-    public function compose($previewMode = false)
+    public function compose()
     {
         if(!$this->_recipient) {
             throw new Exception("Can not compose email without a recipient");
@@ -297,7 +295,7 @@ class Mzax_Emarketing_Model_Medium_Email_Composer
         $recipient = $this->getRecipient();
         $storeId   = $recipient->getStoreId();
         $processor = $this->getTemplateProcessor();
-        $processor->isPreview($previewMode);
+        
         
         if($this->allowPrerender()) {
             $this->_subject  = $processor->getSubject();
@@ -390,7 +388,7 @@ class Mzax_Emarketing_Model_Medium_Email_Composer
         
         // remove lines
         $css = preg_replace("/([\n\r]+)/", "", $css);
-        $css = preg_replace("/}\\s*/", "}\n", $css);
+        $css = preg_replace("/}\s*/", "}\n", $css);
         
         // allow extra line for @media queries
         $css = preg_replace("/^@(.*?){/m", "\n@$1{\n", $css);
@@ -565,7 +563,7 @@ class Mzax_Emarketing_Model_Medium_Email_Composer
         list($area, $url) = $matches;
     
         if(strpos(strtolower($url), 'mailto:') === 0) {
-            return $url;
+            return $linkHtml;
         }
     
         $label = array($this->_currentMapName[1]);
