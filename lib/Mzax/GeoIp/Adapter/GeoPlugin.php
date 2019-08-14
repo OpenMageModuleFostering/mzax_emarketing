@@ -10,7 +10,7 @@
  * 
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.2.5
+ * @version 0.2.6
  */
 class Mzax_GeoIp_Adapter_GeoPlugin extends Mzax_GeoIp_Adapter_Abstract
 {
