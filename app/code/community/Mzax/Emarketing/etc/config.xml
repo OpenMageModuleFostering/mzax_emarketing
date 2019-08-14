@@ -10,7 +10,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.2
+ * @version     0.4.3
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -21,7 +21,7 @@
 <config>
     <modules>
         <Mzax_Emarketing>
-        	<version>0.4.2</version>
+        	<version>0.4.3</version>
 		</Mzax_Emarketing>
 	</modules>
     <global>
@@ -134,6 +134,10 @@
         					<title>SendGrid</title>
         					<class>mzax_emarketing/outbox_transporter_sendgrid</class>
         				</sendgrid>
+        				<mandrill>
+        					<title>Mandrill</title>
+        					<class>mzax_emarketing/outbox_transporter_mandrill</class>
+        				</mandrill>
         				<file>
         					<title>File System (no emails, for debug only)</title>
         					<class>mzax_emarketing/outbox_transporter_file</class>
@@ -377,10 +381,14 @@
 				<remove_comments>1</remove_comments>
 				<test_mode>1</test_mode>
 				<list_unsubscribe>1</list_unsubscribe>
+                <ttl>40</ttl>
 				<transporter>sendmail</transporter>
 				<sendgrid_category>Magento, eMarketing</sendgrid_category>
 				<sendgrid_category_tags>1</sendgrid_category_tags>
 				<sendgrid_unique_args>1</sendgrid_unique_args>
+				<mandrill_default_tags>Magento, eMarketing</mandrill_default_tags>
+				<mandrill_category_tags>1</mandrill_category_tags>
+				<mandrill_metatags>1</mandrill_metatags>
 			</email>
         </mzax_emarketing>
         <trans_email>

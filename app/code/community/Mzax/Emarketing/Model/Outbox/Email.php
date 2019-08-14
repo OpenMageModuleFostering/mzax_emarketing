@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.2
+ * @version     0.4.3
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -437,6 +437,11 @@ class Mzax_Emarketing_Model_Outbox_Email
         
         if(Mage::getStoreConfigFlag('mzax_emarketing/email/test_mode', $recipient->getStoreId())) {
             $address = Mage::getStoreConfig('mzax_emarketing/email/test_mode_address', $recipient->getStoreId());
+            
+            if($recipient->getForceAddress()) {
+                $address = $recipient->getForceAddress();
+            }
+            
             if(!$address) {
                 return null;
             }
