@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.1
+ * @version     0.4.10
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -17,7 +17,7 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-class Mzax_Emarketing_Admin_InboxController extends Mage_Adminhtml_Controller_Action
+class Mzax_Emarketing_Emarketing_InboxController extends Mage_Adminhtml_Controller_Action
 {
 	
 	
@@ -156,14 +156,23 @@ class Mzax_Emarketing_Admin_InboxController extends Mage_Adminhtml_Controller_Ac
             $collection->addIdFilter($messages);
             $collection->assignCampaigns();
             $collection->assignRecipients();
+
+            $count = 0;
             
             /* @var $email Mzax_Emarketing_Model_Inbox_Email */
             foreach($collection as $email) {
-                $email->forward();
+                if($email->forward()) {
+                    $count++;
+                }
+                else {
+                    $this->_getSession()->addWarning(
+                        $this->__('Failed to forward email from "%s".', $email->getEmail())
+                    );
+                }
             }
     
             $this->_getSession()->addSuccess(
-                $this->__('Total of %d email(s) have been forwarded.', count($collection))
+                $this->__('Total of %d email(s) have been forwarded.', $count)
             );
         }
         $this->_redirect('*/*/index');

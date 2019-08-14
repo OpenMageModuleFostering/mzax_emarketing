@@ -27,6 +27,8 @@
  * which is copyright Ian Bicking, @see https://github.com/SimonSapin/cssselect.
  *
  * @author Jean-François Simon <jeanfrancois.simon@sensiolabs.com>
+ *
+ * @internal
  */
 class Symfony_Component_CssSelector_Parser_Shortcut_ClassParser implements Symfony_Component_CssSelector_Parser_ParserInterface
 {
@@ -37,15 +39,14 @@ class Symfony_Component_CssSelector_Parser_Shortcut_ClassParser implements Symfo
     {
         // Matches an optional namespace, optional element, and required class
         // $source = 'test|input.ab6bd_field';
-        // $matches = array (size=5)
-        //     0 => string 'test:input.ab6bd_field' (length=22)
-        //     1 => string 'test:' (length=5)
-        //     2 => string 'test' (length=4)
-        //     3 => string 'input' (length=5)
-        //     4 => string 'ab6bd_field' (length=11)
-        if (preg_match('/^(([a-z]+)\|)?([\w-]+|\*)?\.([\w-]+)$/i', trim($source), $matches)) {
+        // $matches = array (size=4)
+        //     0 => string 'test|input.ab6bd_field' (length=22)
+        //     1 => string 'test' (length=4)
+        //     2 => string 'input' (length=5)
+        //     3 => string 'ab6bd_field' (length=11)
+        if (preg_match('/^(?:([a-z]++)\|)?+([\w-]++|\*)?+\.([\w-]++)$/i', trim($source), $matches)) {
             return array(
-                new Symfony_Component_CssSelector_Node_SelectorNode(new Symfony_Component_CssSelector_Node_ClassNode(new Symfony_Component_CssSelector_Node_ElementNode($matches[2] ?: null, $matches[3] ?: null), $matches[4])),
+                new Symfony_Component_CssSelector_Node_SelectorNode(new Symfony_Component_CssSelector_Node_ClassNode(new Symfony_Component_CssSelector_Node_ElementNode($matches[1] ?: null, $matches[2] ?: null), $matches[3])),
             );
         }
 

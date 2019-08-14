@@ -10,7 +10,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.1
+ * @version     0.4.10
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -47,6 +47,16 @@
                             <show_in_store>0</show_in_store>
                             <tooltip><![CDATA[Disabling will only prevent any crontab from running. You can still send out campaigns manually.]]></tooltip>
                         </enable>
+                        <newsletter_multistore translate="label">
+                            <label>Newsletter Multi-Store support</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>15</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <tooltip><![CDATA[Fix the Magento newsletter multi store bug]]></tooltip>
+                        </newsletter_multistore>
                         <use_temp_tables translate="label comment">
                             <label>Use Temporary Tables</label>
                             <frontend_type>select</frontend_type>
@@ -477,7 +487,17 @@
                             <validate>validate-email</validate>
                             <comment>Http list unsubscribe is handled automatically, if you use the bounce/inbox, enter the reply-to email address to automatically handle mailto: unsubscribes.</comment>
                         </list_unsubscribe_address>
-                        
+                        <ttl translate="label comment">
+                            <label>Email TTL</label>
+                            <sort_order>120</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <validate>validate-not-negative-number</validate>
+                            <comment>All incoming and outgoing emails are saved for the above time to allow
+                                access to the content. Most of the time the content can be deleted as it is
+                                not required, but a minimum of 20 days is recommended.</comment>
+                        </ttl>
                         <transporter translate="label comment">
                             <label>Email Transporter</label>
                             <frontend_type>select</frontend_type>
@@ -605,6 +625,134 @@
                             <comment><![CDATA[Use <a href="https://sendgrid.com/docs/API_Reference/SMTP_API/unique_arguments.html">unique arguments</a> tag to id emails]]></comment>
                             <tooltip><![CDATA[campaign id, recipient id, variation id, campaign name will be added to the email]]></tooltip>
                         </sendgrid_unique_args>
+                        
+                        
+                        <!-- MANDRILL SETTINGS -->
+                        <mandrill_test translate="label">
+                            <label>Connection Test</label>
+                            <frontend_model>mzax_emarketing/system_config_form_field_mandrill</frontend_model>
+                            <sort_order>1005</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </mandrill_test>
+                        <mandrill_username translate="label comment">
+                            <label>Username</label>
+                            <sort_order>1010</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><transporter>mandrill</transporter></depends>
+                        </mandrill_username>
+                        <mandrill_password translate="label comment">
+                            <label>API Key</label>
+                            <frontend_type>password</frontend_type>
+                            <sort_order>1020</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><transporter>mandrill</transporter></depends>
+                            <tooltip><![CDATA[Any valid API key, you can create them in Mandrill under Settings => SMTP &amp; API Info]]></tooltip>
+                        </mandrill_password>
+                        <mandrill_subaccount>
+                        	<label>Subaccount</label>
+                            <sort_order>1025</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><transporter>mandrill</transporter></depends>
+                            <comment><![CDATA[Optional <a href="https://mandrill.zendesk.com/hc/en-us/articles/205582117-Using-SMTP-Headers-to-customize-your-messages#specify-the-subaccount-for-sending-the-message">subaccount id</a>, leave blank if not used.]]></comment>
+                    		<tooltip><![CDATA[Please note, the subaccount must b created first in Mandrill in order for the emails to be sent.]]></tooltip>
+                        </mandrill_subaccount>
+                        <mandrill_default_tags translate="label comment">
+                            <label>Default Tags</label>
+                            <sort_order>1030</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><transporter>mandrill</transporter></depends>
+                            <comment><![CDATA[<a href="https://mandrill.zendesk.com/hc/en-us/articles/205582117-Using-SMTP-Headers-to-customize-your-messages#tag-your-messages">Tags</a> should be used to group messages together by broad topic. (e.g. Magento)]]></comment>
+                        </mandrill_default_tags>
+                        <mandrill_category_tags translate="label comment">
+                            <label>Include Campaign Tags</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1040</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><transporter>mandrill</transporter></depends>
+                            <comment><![CDATA[Send campaign tags to Mandrill]]></comment>
+                            <tooltip><![CDATA[Each campaign can have tags for organise purpose, you can add those to Mandrill]]></tooltip>
+                        </mandrill_category_tags>
+                        <mandrill_metatags translate="label">
+                            <label>Add Metatags</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1050</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><transporter>mandrill</transporter></depends>
+                            <comment><![CDATA[Add <a href="https://mandrill.zendesk.com/hc/en-us/articles/205582117-Using-SMTP-Headers-to-customize-your-messages#use-custom-metadata">metatags</a> to id emails]]></comment>
+                            <tooltip><![CDATA[campaign id, recipient id, variation id, campaign name will be added as metatag to the email]]></tooltip>
+                        </mandrill_metatags>
+
+
+                        <!-- MANDRILL API SETTINGS -->
+                        <mandrill_api_key translate="label comment">
+                            <label>API Key</label>
+                            <frontend_type>password</frontend_type>
+                            <sort_order>1020</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><transporter>mandrill_api</transporter></depends>
+                            <tooltip><![CDATA[Any valid API key, you can create them in Mandrill under Settings => SMTP &amp; API Info]]></tooltip>
+                        </mandrill_api_key>
+                        <mandrill_api_subaccount>
+                            <label>Subaccount</label>
+                            <sort_order>1025</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><transporter>mandrill_api</transporter></depends>
+                            <comment><![CDATA[Optional <a href="https://mandrill.zendesk.com/hc/en-us/articles/205582117-Using-SMTP-Headers-to-customize-your-messages#specify-the-subaccount-for-sending-the-message">subaccount id</a>, leave blank if not used.]]></comment>
+                            <tooltip><![CDATA[Please note, the subaccount must b created first in Mandrill in order for the emails to be sent.]]></tooltip>
+                        </mandrill_api_subaccount>
+                        <mandrill_api_default_tags translate="label comment">
+                            <label>Default Tags</label>
+                            <sort_order>1030</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><transporter>mandrill_api</transporter></depends>
+                            <comment><![CDATA[<a href="https://mandrill.zendesk.com/hc/en-us/articles/205582117-Using-SMTP-Headers-to-customize-your-messages#tag-your-messages">Tags</a> should be used to group messages together by broad topic. (e.g. Magento)]]></comment>
+                        </mandrill_api_default_tags>
+                        <mandrill_api_category_tags translate="label comment">
+                            <label>Include Campaign Tags</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1040</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><transporter>mandrill_api</transporter></depends>
+                            <comment><![CDATA[Send campaign tags to Mandrill]]></comment>
+                            <tooltip><![CDATA[Each campaign can have tags for organise purpose, you can add those to Mandrill]]></tooltip>
+                        </mandrill_api_category_tags>
+                        <mandrill_api_metatags translate="label">
+                            <label>Add Metatags</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1050</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><transporter>mandrill_api</transporter></depends>
+                            <comment><![CDATA[Add <a href="https://mandrill.zendesk.com/hc/en-us/articles/205582117-Using-SMTP-Headers-to-customize-your-messages#use-custom-metadata">metatags</a> to id emails]]></comment>
+                            <tooltip><![CDATA[campaign id, recipient id, variation id, campaign name will be added as metatag to the email]]></tooltip>
+                        </mandrill_api_metatags>
                         
                     </fields>
                 </email>

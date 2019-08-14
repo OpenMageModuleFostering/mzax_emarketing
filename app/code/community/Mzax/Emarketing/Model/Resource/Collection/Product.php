@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.1
+ * @version     0.4.10
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -24,7 +24,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.4.1
+ * @version 0.4.10
  */
 class Mzax_Emarketing_Model_Resource_Collection_Product extends Mage_Catalog_Model_Resource_Product_Collection
 {
@@ -34,6 +34,21 @@ class Mzax_Emarketing_Model_Resource_Collection_Product extends Mage_Catalog_Mod
      * @var array
      */
     protected static $_eventTypes;
+    
+    
+    
+    
+    
+    /**
+     * Retrieve is flat enabled flag
+     * Return always false if magento run admin
+     *
+     * @return bool
+     */
+    public function isEnabledFlat()
+    {
+        return false;
+    }
     
     
     

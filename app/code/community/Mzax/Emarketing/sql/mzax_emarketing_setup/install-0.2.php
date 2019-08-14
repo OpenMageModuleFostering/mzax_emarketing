@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.1
+ * @version     0.4.10
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -203,7 +203,7 @@ $recipientTable = $connection->newTable($installer->getTable('mzax_emarketing/re
     ->setOption('charset', ' ascii')
     ->setOption('collate', 'ascii_bin')
     ->addIndex('IDX_PREPARED_AT', array('prepared_at'))
-    ->addIndex('IDX_CAMPAIGN_CREATED', array('campaign_id', 'created_at'), $uniqueIndex)
+    ->addIndex('IDX_CAMPAIGN_CREATED', array('campaign_id', 'created_at'))
     ->addIndex('UNQ_BEACON', array('beacon_hash'), $uniqueIndex);
 
 $installer->addForeignKey($recipientTable, $campaignTable, 'campaign_id');

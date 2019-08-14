@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.1
+ * @version     0.4.10
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -26,7 +26,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.4.1
+ * @version 0.4.10
  */
 class Mzax_Emarketing_Model_Observer_Cron
     extends Mzax_Emarketing_Model_Observer_Abstract
@@ -49,7 +49,11 @@ class Mzax_Emarketing_Model_Observer_Cron
     public function test()
     {
         $this->_testMode = true;
-        
+
+        echo "Purge old emails... ";
+        $this->purge();
+        echo "done\n\n";
+
         echo "Fetch recipients... ";
         $this->fetchRecipients();
         echo "done\n\n";
@@ -264,7 +268,29 @@ class Mzax_Emarketing_Model_Observer_Cron
             'verbose'     => $this->_testMode
         ));
     }
-    
-    
+
+
+
+
+    /**
+     * Purge/cleanse old emails
+     *
+     * No need to keep full content - it can grow quick.
+     *
+     * @return void
+     */
+    public function purge()
+    {
+        $ttl = (int) Mage::getStoreConfig('mzax_emarketing/ema/email_ttl');
+        $ttl = max($ttl, 14);
+
+        /* @var $inbox Mzax_Emarketing_Model_Resource_Inbox_Email */
+        $inbox = Mage::getResourceSingleton('mzax_emarketing/inbox_email');
+        $inbox->purge($ttl);
+
+        /* @var $outbox Mzax_Emarketing_Model_Resource_Outbox_Email */
+        $outbox = Mage::getResourceSingleton('mzax_emarketing/outbox_email');
+        $outbox->purge($ttl);
+    }
     
 }

@@ -24,6 +24,8 @@
  * @see http://www.w3.org/TR/selectors/#specificity
  *
  * @author Jean-François Simon <jeanfrancois.simon@sensiolabs.com>
+ *
+ * @internal
  */
 class Symfony_Component_CssSelector_Node_Specificity
 {
@@ -82,7 +84,7 @@ class Symfony_Component_CssSelector_Node_Specificity
 
     /**
      * Returns -1 if the object specificity is lower than the argument,
-     * 0 if they are equal, and 1 if the argument is lower
+     * 0 if they are equal, and 1 if the argument is lower.
      *
      * @param Symfony_Component_CssSelector_Node_Specificity $specificity
      *

@@ -26,6 +26,8 @@
  * which is copyright Ian Bicking, @see https://github.com/SimonSapin/cssselect.
  *
  * @author Jean-François Simon <jeanfrancois.simon@sensiolabs.com>
+ *
+ * @internal
  */
 class Symfony_Component_CssSelector_Parser_Handler_WhitespaceHandler implements Symfony_Component_CssSelector_Parser_Handler_HandlerInterface
 {

@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.1
+ * @version     0.4.10
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -179,7 +179,7 @@ class Mzax_Emarketing_Block_Campaign_Preview extends Mage_Adminhtml_Block_Widget
                 $recipient->prepare();
                 $this->_email->setTo($recipient->getAddress());
                 $this->_email->setRecipient($recipient);
-                $this->_email->render();
+                $this->_email->render(true);
             }
             catch(Exception $error) {
                 $this->setError($error);

@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.1
+ * @version     0.4.10
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -17,7 +17,7 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-class Mzax_Emarketing_Admin_CampaignController extends Mage_Adminhtml_Controller_Action
+class Mzax_Emarketing_Emarketing_CampaignController extends Mage_Adminhtml_Controller_Action
 {
 	
 	
@@ -27,7 +27,14 @@ class Mzax_Emarketing_Admin_CampaignController extends Mage_Adminhtml_Controller
     {
         $this->_title($this->__('eMarketing'))
              ->_title($this->__('Manage Campaigns'));
-        
+
+
+        if(!Mage::getStoreConfigFlag('mzax_emarketing/general/enable')) {
+            $msg = $this->__('The emarketing extension is disabled, no cron jobs are triggered. <a href="%s">Change Settings</a>',
+                $this->getUrl('*/system_config/edit', array('section' => 'mzax_emarketing')));
+
+            $this->_getSession()->addWarning($msg);
+        }
         $this->loadLayout();
         $this->_setActiveMenu('promo/emarketing');
         
@@ -472,7 +479,8 @@ class Mzax_Emarketing_Admin_CampaignController extends Mage_Adminhtml_Controller
                     continue;
                 }
                 try {
-                    $campaign->isArchived(true)->save();
+                    $campaign->isArchived(true);
+                    $campaign->save();
                     $count++;
                 }
                 catch(Exception $e) {
@@ -1035,6 +1043,63 @@ class Mzax_Emarketing_Admin_CampaignController extends Mage_Adminhtml_Controller
             }
         }
         $this->_redirect('*/*/sendTestMail', array('_current' => true, 'variation' => $variationId));
+    }
+    
+    
+    
+    public function mailTesterAction()
+    {
+        
+        
+        try {
+            $campaign = $this->_initCampaign('id');
+        
+            $variationId = (int) $this->getRequest()->getParam('variation');
+            $recipientId = (int) $this->getRequest()->getParam('$recipientId');
+            
+            $recipient   = $campaign->createMockRecipient($recipientId);
+            
+            $hash = "mzax" . $campaign->getId() 
+                           . $campaign->getName() 
+                           . microtime() 
+                           . $recipientId 
+                           . session_id();
+            
+            $hash = Mage::helper('mzax_emarketing')->compressHash(md5($hash));
+            
+            $id = "mzax-{$hash}";
+            $email = "{$id}@mail-tester.com";
+            
+        
+            Mage::register('current_recipient', $recipient);
+            $recipient->prepare();
+            $recipient->setForceAddress($email);
+            $recipient->setAddress($email);
+        
+            if($variationId = (int) $this->getRequest()->getParam('variation')) {
+                $recipient->setVariationId($variationId);
+            }
+        
+            $recipient->isPrepared(true);
+            $recipient->save();
+        
+            $campaign->getMedium()->sendRecipient($recipient);
+        
+            $this->_redirectUrl('http://www.mail-tester.com/' . $id);
+        }
+        catch(Exception $e) {
+            $this->_getSession()->addError($e->getMessage());
+            if(Mage::getIsDeveloperMode()) {
+                throw $e;
+            }
+            $this->_getSession()->addError($this->__("Failed to send test email"));
+            $this->_redirect('*/*/sendTestMail', array('_current' => true));
+        }
+        
+        
+        
+        
+        
     }
     
     

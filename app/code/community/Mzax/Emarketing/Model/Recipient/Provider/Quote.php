@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.1
+ * @version     0.4.10
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -24,7 +24,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.4.1
+ * @version 0.4.10
  */
 class Mzax_Emarketing_Model_Recipient_Provider_Quote
     extends Mzax_Emarketing_Model_Recipient_Provider_Abstract 
@@ -93,12 +93,23 @@ class Mzax_Emarketing_Model_Recipient_Provider_Quote
     public function prepareRecipient(Mzax_Emarketing_Model_Recipient $recipient)
     {
         /* @var $quote Mage_Sales_Model_Quote */
-        $quote = Mage::getModel('sales/quote')->load($recipient->getObjectId());
+        $quote = Mage::getModel('sales/quote')->loadByIdWithoutStore($recipient->getObjectId());
                 
         $recipient->setQuote($quote);
-        $recipient->setCustomer($quote->getCustomer());
         $recipient->setEmail($quote->getCustomerEmail());
         $recipient->setName($quote->getCustomerName());
+        
+        if($quote->getCustomerId())
+        {
+            /* @var $customer Mage_Customer_Model_Customer */
+            $customer = Mage::getModel('customer/customer')->load($quote->getCustomerId());
+        
+            if($customer->getId()) {
+                $quote->setCustomer($customer);
+                $recipient->setCustomer($customer);
+                $recipient->setEmail($customer->getEmail());
+            }
+        }
     }
     
     

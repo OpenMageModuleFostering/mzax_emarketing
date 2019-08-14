@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.1
+ * @version     0.4.10
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -155,6 +155,8 @@ abstract class Mzax_Emarketing_Model_Object_Filter_Component extends Varien_Obje
     {
         $query = $this->getParentOrSelf()->getQuery();
         $this->_prepareQuery($query->lock());
+        $query->comment('FILTER: ' . get_class($this));
+
         return $query->lock(false);
     }
     
