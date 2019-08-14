@@ -9,7 +9,7 @@
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  * 
- * @version     0.4.4
+ * @version     0.4.5
  * @category    Mzax
  * @package     Mzax_Emarketing
  * @author      Jacob Siefer (jacob@mzax.de)
@@ -25,7 +25,7 @@
  *
  * @author Jacob Siefer
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @version 0.4.4
+ * @version 0.4.5
  */
 class Mzax_Emarketing_Block_Grid_Column_Renderer_Size
     extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract

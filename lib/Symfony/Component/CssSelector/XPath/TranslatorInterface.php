@@ -33,7 +33,7 @@ interface Symfony_Component_CssSelector_XPath_TranslatorInterface
      * @param string $cssExpr
      * @param string $prefix
      *
-     * @return Symfony_Component_CssSelector_XPath_XPathExpr
+     * @return string
      */
     public function cssToXPath($cssExpr, $prefix = 'descendant-or-self::');
 
@@ -43,7 +43,7 @@ interface Symfony_Component_CssSelector_XPath_TranslatorInterface
      * @param Symfony_Component_CssSelector_Node_SelectorNode $selector
      * @param string       $prefix
      *
-     * @return Symfony_Component_CssSelector_XPath_XPathExpr
+     * @return string
      */
     public function selectorToXPath(Symfony_Component_CssSelector_Node_SelectorNode $selector, $prefix = 'descendant-or-self::');
 }
