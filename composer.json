@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/Mzax_Emarketing",
+    "name": "OpenMageModuleFostering\/Mzax_Emarketing",
     "type": "magento-module",
     "license": "Open-Software-License-v.-3.0-(OSL-3.0)",
     "homepage": "",
     "description": "Create automated marketing campaigns that run for a set period of time and target customers determined by multiple filters.",
     "authors": [
-    {
-        "name": "Jacob Siefer",
-        "email": "mail@jacobsiefer.de"
-    }
-],
+        {
+            "name": "Jacob Siefer",
+            "email": "mail@jacobsiefer.de"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
